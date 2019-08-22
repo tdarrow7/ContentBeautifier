@@ -15,7 +15,8 @@
                 "highlighter.css"
             ],
             "js": [
-                "highlighter.js"
+                "highlighter.js",
+                "popup.js"
             ]
         }
     ],

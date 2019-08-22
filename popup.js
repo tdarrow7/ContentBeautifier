@@ -27,6 +27,7 @@ function findNodeTree(event) {
     hue += 10;
     lightness += 4;
     tree.push(el);
+    getID(el);
     while(parentEl && parentEl.nodeName != '#document') {
         hsla = 'hsla(' + hue + ',100%,' + lightness + '%,'+ opacity + ')';
         setMultipleAttributes(parentEl, { 'data-copy': 'true', 'data-cNode': tree.length,  'style': 'background-color:' + hsla });
@@ -100,16 +101,12 @@ function setMultipleAttributes(el, attrMap) {
 
 // Removes exisiting data-copy attr and updates the selected element from breadcrumb popup
 function moveCopyAttribute(el) {
-    console.log(el.nodeName);
-
-    var cnodeval = (el).getAttribute('data-cnode');
-      
-    var removecopy = document.querySelector("body [data-copy]");
-
+    var cnodeval = (el).getAttribute('data-cnode'),
+        removecopy = document.querySelector("body [data-copy]");
     removecopy.removeAttribute("data-copy");
-
-    document.querySelector('[data-cnode="'+cnodeval+'"]').setAttribute('data-copy','true');
-      
+    let newNode = document.querySelector('[data-cnode="'+cnodeval+'"]');
+    newNode.setAttribute('data-copy','true');
+    getID(newNode);
 }
 
 // listen for click events in the window. On click, call findNodeTree function

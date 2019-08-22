@@ -1,10 +1,12 @@
 var body = document.getElementsByTagName('body');
 var highlight = document.createElement('div');
 
-document.addEventListener('click', function (e) {
-    var item = e.target;
-    getID(item);
-});
+// document.addEventListener('click', function (e) {
+//     var item = e.target;
+//     getID(item);
+// });
+
+// commented out by tim
 
 function setAttributes(el, attrs) {
     for (var key in attrs) {
