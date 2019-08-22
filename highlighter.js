@@ -13,7 +13,12 @@ function setAttributes(el, attrs) {
 }
 
 function getID(el) {
-    var styleString = "position: absolute !important; visibility: visible !important; opacity: 1 !important; height: " + el.offsetHeight + "px; width: " + el.offsetWidth + "px; left: " + el.offsetLeft + "px; top: " + el.offsetTop + "px";
+
+    let bodyRect = document.body.getBoundingClientRect(),
+        elemRect = el.getBoundingClientRect(),
+        top = (elemRect.top - bodyRect.top),
+        left = (elemRect.left - bodyRect.left);
+    var styleString = "position: absolute !important; visibility: visible !important; opacity: 1 !important; height: " + el.offsetHeight + "px; width: " + el.offsetWidth + "px; left: " + left + "px; top: " + top + "px";
     setAttributes(highlight, {
         "class": "highlighter",
         "style": styleString
