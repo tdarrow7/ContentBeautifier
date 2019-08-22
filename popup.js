@@ -98,16 +98,18 @@ function setMultipleAttributes(el, attrMap) {
     }
 }
 
-// helper function to remove multiple attributes at a time
-// note that the function is looking for both an element and a map to be passed as variables
-function nukeMultipleAttributes(el, attrMap) {
-    for(let key in attrMap) {
-        el.removeAttribute(key, attrMap[key]);
-    }
-}
-
+// Removes exisiting data-copy attr and updates the selected element from breadcrumb popup
 function moveCopyAttribute(el) {
     console.log(el.nodeName);
+
+    var cnodeval = (el).getAttribute('data-cnode');
+      
+    var removecopy = document.querySelector("body [data-copy]");
+
+    removecopy.removeAttribute("data-copy");
+
+    document.querySelector('[data-cnode="'+cnodeval+'"]').setAttribute('data-copy','true');
+      
 }
 
 // listen for click events in the window. On click, call findNodeTree function
