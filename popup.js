@@ -1,7 +1,9 @@
 // declare default variables
 let el = null, 
     parentEl = null,
-    tree = []
+    tree = [];
+
+    //hsla(100, 50%, 60%, 1)
 
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) { 
@@ -13,14 +15,23 @@ function findNodeTree(event) {
     // set variables to elements that you clicked on
     el = event.target;
     parentEl = el.parentNode;
+    let hue = 150,
+        lightness = 70,
+        opacity = 1,
+        hsla = null;
 
     // Push element into tree array
-    setMultipleAttributes(el, { 'data-copy': 'true', 'data-cNode': tree.length });
+    //hsla = 'hsla(' + hue + ',100%,' + lightness + '%,'+ opacity + ')';
+    hsla = 'hsla(' + hue + ',100%,50%' + opacity + ')';
+    setMultipleAttributes(el, { 'data-copy': 'true', 'data-cNode': tree.length,  'style': 'background-color:' + hsla});
+    hue += 10;
+    lightness += 4;
     tree.push(el);
-    // el.setAttribute('data-copy', 'true');
-    // el.setAttribute('data-cNode', tree.length);
     while(parentEl && parentEl.nodeName != '#document') {
-        parentEl.setAttribute('data-cNode', tree.length);
+        hsla = 'hsla(' + hue + ',100%,' + lightness + '%,'+ opacity + ')';
+        setMultipleAttributes(parentEl, { 'data-copy': 'true', 'data-cNode': tree.length,  'style': 'background-color:' + hsla });
+        hue += 10;
+        lightness += (lightness < 95) ? 4 : 0;
         tree.push(parentEl);
         parentEl = parentEl.parentNode;
     }
@@ -46,6 +57,8 @@ function clearNodeTree() {
     nav.remove();
     for (let i = 0; i < tree.length; i++) {
         tree[i].removeAttribute('data-cNode');
+        // nukeMultipleAttributes(tree[i], { 'data-cNode', '' })
+        tree[i].removeAttribute('style');
         if (tree[i].hasAttribute('data-copy')) 
             tree[i].removeAttribute('data-copy');
     }
@@ -55,9 +68,11 @@ function clearNodeTree() {
 
 // function that builds navigable representation of tree
 function createRepresentationOfTree() {
-    let nav = document.createElement('nav');
+    let nav = document.createElement('nav'),
+        header = document.createElement('header');
     nav.setAttribute('data-nav', '');
     nav.classList += 'data-nav';
+    header.innerText = 'Click on nodes to highlight';
     for (let i = 0; i < tree.length; i++) {
         let link = document.createElement('a');
         setMultipleAttributes(link, { 'data-cNode': tree[i].getAttribute('data-cNode'), 'href': 'javascript:void(0)' });
@@ -70,6 +85,7 @@ function createRepresentationOfTree() {
             nav.prepend(separator)
         }
     }
+    nav.prepend(header);
     document.body.appendChild(nav);
 }
 
@@ -79,6 +95,14 @@ function createRepresentationOfTree() {
 function setMultipleAttributes(el, attrMap) {
     for(let key in attrMap) {
         el.setAttribute(key, attrMap[key]);
+    }
+}
+
+// helper function to remove multiple attributes at a time
+// note that the function is looking for both an element and a map to be passed as variables
+function nukeMultipleAttributes(el, attrMap) {
+    for(let key in attrMap) {
+        el.removeAttribute(key, attrMap[key]);
     }
 }
 
