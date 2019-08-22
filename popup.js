@@ -81,8 +81,18 @@ function setMultipleAttributes(el, attrMap) {
     }
 }
 
+// Removes exisiting data-copy attr and updates the selected element from breadcrumb popup
 function moveCopyAttribute(el) {
     console.log(el.nodeName);
+
+    var cnodeval = (el).getAttribute('data-cnode');
+      
+    var removecopy = document.querySelector("body [data-copy]");
+
+    removecopy.removeAttribute("data-copy");
+
+    document.querySelector('[data-cnode="'+cnodeval+'"]').setAttribute('data-copy','true');
+      
 }
 
 // listen for click events in the window. On click, call findNodeTree function
