@@ -11,11 +11,11 @@
             "matches": [
                 "<all_urls>"
             ],
-            "js": [
-                "content.js"
-            ],
             "css": [
-                "styles.css"
+                "highlighter.css"
+            ],
+            "js": [
+                "highlighter.js"
             ]
         }
     ],
