@@ -1,4 +1,4 @@
-html > body > div.highlighter {
+.highlighter {
     display: block !important;
     position: absolute !important;
     z-index: 9997 !important;
