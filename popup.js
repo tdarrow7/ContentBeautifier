@@ -57,6 +57,7 @@ function clearNodeTree() {
 function createRepresentationOfTree() {
     let nav = document.createElement('nav');
     nav.setAttribute('data-nav', '');
+    nav.classList += 'data-nav';
     for (let i = 0; i < tree.length; i++) {
         let link = document.createElement('a');
         setMultipleAttributes(link, { 'data-cNode': tree[i].getAttribute('data-cNode'), 'href': 'javascript:void(0)' });
