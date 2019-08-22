@@ -81,9 +81,15 @@ function setMultipleAttributes(el, attrMap) {
     }
 }
 
+function moveCopyAttribute(el) {
+    console.log(el.nodeName);
+}
+
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener('click', () => {
     event.preventDefault();
-    if(!event.target.parentNode.hasAttribute('data-nav'))
+    if(!event.target.parentNode.hasAttribute('data-nav') && !event.target.hasAttribute('data-nav'))
         findNodeTree(event);
+    else if(event.target.hasAttribute('data-cNode'))
+        moveCopyAttribute(event.target);
 });
