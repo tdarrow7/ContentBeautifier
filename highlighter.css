@@ -20,7 +20,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: flex-end;
-    position: absolute;
+    position: fixed;
     flex-flow: row wrap;
     left: 0px;
     top: 0;
