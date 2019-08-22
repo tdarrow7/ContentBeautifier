@@ -61,7 +61,6 @@ function createRepresentationOfTree() {
         let link = document.createElement('a');
         setMultipleAttributes(link, { 'data-cNode': tree[i].getAttribute('data-cNode'), 'href': 'javascript:void(0)' });
         link.innerText = tree[i].nodeName.toString().toLowerCase();
-        console.log(link);
         nav.prepend(link);
         if(i < tree.length - 1) {
             let separator = document.createElement('span');
@@ -84,7 +83,7 @@ function setMultipleAttributes(el, attrMap) {
 
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener('click', () => {
-
     event.preventDefault();
-    findNodeTree(event);
+    if(!event.target.parentNode.hasAttribute('data-nav'))
+        findNodeTree(event);
 });
