@@ -2,6 +2,12 @@ html[data-cbnode] {
     scroll-behavior: smooth;
 }
 
+html[data-cbnode] > body {
+    width: calc(100% - 360px);
+    margin-left: auto;
+    margin-right: 0;
+}
+
 .highlighter {
     display: block !important;
     position: absolute !important;
@@ -53,38 +59,39 @@ html[data-cbnode] {
 }
 
 [data-nav] {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
+    /* display: flex; */
+    /* justify-content: flex-start; */
+    /* align-items: flex-end; */
+    /* flex-flow: row wrap; */
     position: fixed;
-    flex-flow: row wrap;
     left: 0px;
     top: 0;
     z-index: 10000;
+    height: 100%;
     /* background-color: rgba(255, 255, 255, 0.8); */
-    background-color: #FFFFFF;
-    border: 1px solid black;
-    padding: 20px 30px;
-    max-width: 100%;
-    font-size: 22px;
+    background-color: #000000;
+    padding: 3em 1em;
+    width: 20em;
+    font-size: 18px;
     transition: background-color .4s ease 0s;
 }
 
 [data-nav] > a {
-    color: #4D9FA0;
+    color: gray;
     transition: color .4s ease 0s;
+    display: block;
 }
 
 [data-nav] > a:hover {
-    color: #113D3A;
+    color: #FFFFFF;
+}
+
+[data-nav] > a + a {
+    margin-left: 0.56em;
 }
 
 [data-nav] .separator {
     font-weight: 700;
     color: grey;
     margin: 0 0.5em;
-}
-
-[data-nav]:hover {
-    background-color: white;
 }
