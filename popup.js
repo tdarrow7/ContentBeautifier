@@ -23,14 +23,16 @@ function findNodeTree(event) {
     // Push element into tree array
     //hsla = 'hsla(' + hue + ',100%,' + lightness + '%,'+ opacity + ')';
     hsla = 'hsla(' + hue + ',100%,50%' + opacity + ')';
-    setMultipleAttributes(el, { 'data-copy': 'true', 'data-cNode': tree.length,  'style': 'background-color:' + hsla});
+    // setMultipleAttributes(el, { 'data-cbcopy': 'true', 'data-cbnode': tree.length,  'style': 'background-color:' + hsla});
+    setMultipleAttributes(el, { 'data-cbcopy': 'true', 'data-cbnode': tree.length});
     hue += 10;
     lightness += 4;
     tree.push(el);
     getID(el);
     while(parentEl && parentEl.nodeName != '#document') {
         hsla = 'hsla(' + hue + ',100%,' + lightness + '%,'+ opacity + ')';
-        setMultipleAttributes(parentEl, { 'data-copy': 'true', 'data-cNode': tree.length,  'style': 'background-color:' + hsla });
+        // setMultipleAttributes(parentEl, { 'data-cbcopy': 'true', 'data-cbnode': tree.length,  'style': 'background-color:' + hsla });
+        setMultipleAttributes(parentEl, { 'data-cbcopy': 'true', 'data-cbnode': tree.length });
         hue += 10;
         lightness += (lightness < 95) ? 4 : 0;
         tree.push(parentEl);
@@ -52,16 +54,16 @@ function triggerHighlightFunction() {
     console.log('placeholder');
 }
 
-// clear all data-cNode and data-copy attributes out of existing tree
+// clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
     let nav = document.querySelector('[data-nav]');
     nav.remove();
     for (let i = 0; i < tree.length; i++) {
-        tree[i].removeAttribute('data-cNode');
-        // nukeMultipleAttributes(tree[i], { 'data-cNode', '' })
+        tree[i].removeAttribute('data-cbnode');
+        // nukeMultipleAttributes(tree[i], { 'data-cbnode', '' })
         tree[i].removeAttribute('style');
-        if (tree[i].hasAttribute('data-copy')) 
-            tree[i].removeAttribute('data-copy');
+        if (tree[i].hasAttribute('data-cbcopy')) 
+            tree[i].removeAttribute('data-cbcopy');
     }
     // destroy the current tree
     tree = [];
@@ -69,14 +71,13 @@ function clearNodeTree() {
 
 // function that builds navigable representation of tree
 function createRepresentationOfTree() {
-    let nav = document.createElement('nav'),
-        header = document.createElement('header');
+    let nav = document.createElement('nav');
     nav.setAttribute('data-nav', '');
     nav.classList += 'data-nav';
-    header.innerText = 'Click on nodes to highlight';
     for (let i = 0; i < tree.length; i++) {
         let link = document.createElement('a');
-        setMultipleAttributes(link, { 'data-cNode': tree[i].getAttribute('data-cNode'), 'href': 'javascript:void(0)' });
+        // setMultipleAttributes(link, { 'data-cbnode': tree[i].getAttribute('data-cbnode'), 'href': 'javascript:void(0)', 'onmouseover': 'moveHoverHighlight(this)' });
+        setMultipleAttributes(link, { 'data-cbnode': tree[i].getAttribute('data-cbnode'), 'href': 'javascript:void(0)' });
         link.innerText = tree[i].nodeName.toString().toLowerCase();
         nav.prepend(link);
         if(i < tree.length - 1) {
@@ -86,7 +87,6 @@ function createRepresentationOfTree() {
             nav.prepend(separator)
         }
     }
-    nav.prepend(header);
     document.body.appendChild(nav);
 }
 
@@ -99,13 +99,13 @@ function setMultipleAttributes(el, attrMap) {
     }
 }
 
-// Removes exisiting data-copy attr and updates the selected element from breadcrumb popup
+// Removes exisiting data-cbcopy attr and updates the selected element from breadcrumb popup
 function moveCopyAttribute(el) {
-    var cnodeval = (el).getAttribute('data-cnode'),
-        removecopy = document.querySelector("body [data-copy]");
-    removecopy.removeAttribute("data-copy");
-    let newNode = document.querySelector('[data-cnode="'+cnodeval+'"]');
-    newNode.setAttribute('data-copy','true');
+    var cnodeval = (el).getAttribute('data-cbnode'),
+        removecopy = document.querySelector("body [data-cbcopy]");
+    removecopy.removeAttribute("data-cbcopy");
+    let newNode = document.querySelector('[data-cbnode="'+cnodeval+'"]');
+    newNode.setAttribute('data-cbcopy','true');
     getID(newNode);
 }
 
@@ -114,6 +114,6 @@ window.addEventListener('click', () => {
     event.preventDefault();
     if(!event.target.parentNode.hasAttribute('data-nav') && !event.target.hasAttribute('data-nav'))
         findNodeTree(event);
-    else if(event.target.hasAttribute('data-cNode'))
+    else if(event.target.hasAttribute('data-cbnode'))
         moveCopyAttribute(event.target);
 });
