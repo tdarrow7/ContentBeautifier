@@ -1,3 +1,7 @@
+html[data-cbnode] {
+    scroll-behavior: smooth;
+}
+
 .highlighter {
     display: block !important;
     position: absolute !important;
@@ -16,6 +20,38 @@
     transition: .15s !important;
 }
 
+.highlighter.hover {
+    background-color: transparent;
+    box-shadow: inset 0px 0px 0px 1px rgba(255,255,255,1), 3px 3px 8px rgb(82, 169, 0.2);
+    border: solid 2px rgb(82, 169, 0);
+}
+
+.copy-button {
+    padding: .8em 2em;
+    display: inline-block;
+    position: absolute !important;
+    transition: color .8s ease, border-color .8s ease, background-size .8s ease;
+    cursor: pointer;
+    line-height: 1.4;
+    font-weight: 700;
+    z-index: 1;
+    justify-content: center;
+    align-items: center;
+    font-size: .889rem;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+    border-radius: .2rem;
+    text-align: center;
+    color: #FFFFFF;
+    background-color: #4D9FA0;
+    transition: .15s, color .4s ease 0s, background-color .4s ease 0s;
+}
+
+.copy-button:hover {
+    background-color: #113D3A;
+    color: #FFFFFF;
+}
+
 [data-nav] {
     display: flex;
     justify-content: flex-start;
@@ -25,12 +61,22 @@
     left: 0px;
     top: 0;
     z-index: 10000;
-    background-color: rgba(255, 255, 255, 0.8);
+    /* background-color: rgba(255, 255, 255, 0.8); */
+    background-color: #FFFFFF;
     border: 1px solid black;
     padding: 20px 30px;
-    max-width: 800px;
+    max-width: 100%;
     font-size: 22px;
     transition: background-color .4s ease 0s;
+}
+
+[data-nav] > a {
+    color: #4D9FA0;
+    transition: color .4s ease 0s;
+}
+
+[data-nav] > a:hover {
+    color: #113D3A;
 }
 
 [data-nav] .separator {
