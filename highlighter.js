@@ -11,11 +11,12 @@ function setAttributes(el, attrs) {
 }
 
 function getID() {
+    
     let bodyRect = document.body.getBoundingClientRect(),
         elemRect = document.querySelector('[data-cbcopy]').getBoundingClientRect(),
+        el = document.querySelector('[data-cbcopy]'),
         top = (elemRect.top - bodyRect.top),
-        left = ((elemRect.left - bodyRect.left) + 360);
-        right = (elemRect.right - bodyRect.right);
+        left = ((elemRect.left - bodyRect.left));
     var styleString = 'visibility: visible !important; opacity: 1 !important; height: ' + el.offsetHeight + 'px; width: ' + el.offsetWidth + 'px; left: ' + left + 'px; top: ' + top + 'px';
     setAttributes(highlight, {
         'class': 'highlighter',
@@ -33,18 +34,18 @@ function getID() {
 }
 
 
-function moveHoverHighlight(el) {
-    let bodyRect = document.body.getBoundingClientRect(),
-        elemRect = el.getBoundingClientRect(),
-        top = (elemRect.top - bodyRect.top),
-        left = (elemRect.left - bodyRect.left);
-    var styleString = 'visibility: visible !important; opacity: 1 !important; height: ' + el.offsetHeight + 'px; width: ' + el.offsetWidth + 'px; left: ' + left + 'px; top: ' + top + 'px';
-    setAttributes(hoverHighlight, {
-        'class': 'highlighter hover',
-        'data-cbspecial': '',
-        'style': styleString
-    });
-}
+// function moveHoverHighlight(el) {
+//     let bodyRect = document.body.getBoundingClientRect(),
+//         elemRect = el.getBoundingClientRect(),
+//         top = (elemRect.top - bodyRect.top),
+//         left = (elemRect.left - bodyRect.left);
+//     var styleString = 'visibility: visible !important; opacity: 1 !important; height: ' + el.offsetHeight + 'px; width: ' + el.offsetWidth + 'px; left: ' + left + 'px; top: ' + top + 'px';
+//     setAttributes(hoverHighlight, {
+//         'class': 'highlighter hover',
+//         'data-cbspecial': '',
+//         'style': styleString
+//     });
+// }
 
 function calculateButtonPosition(top) {
     let topPos = top - (copyButton.offsetHeight) - 5;
@@ -63,9 +64,9 @@ function calculateButtonPosition2(top) {
 }
 
 function checkScrollPositon(top, bodyTop) {
-    console.log('top: ' + top);
-    console.log('bodyTop: ' + bodyTop);
-    console.log('diff: ' + (top - bodyTop));
+    // console.log('top: ' + top);
+    // console.log('bodyTop: ' + bodyTop);
+    // console.log('diff: ' + (top - bodyTop));
 
     if (top - bodyTop < 200)
         window.scroll({

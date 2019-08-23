@@ -1,11 +1,12 @@
 html[data-cbnode] {
     scroll-behavior: smooth;
+    /* display: flex; */
 }
 
 html[data-cbnode] > body {
-    width: calc(100% - 360px);
-    margin-left: auto;
-    margin-right: 0;
+    /* width: calc(100% - 360px); */
+    /* margin-right: auto; */
+    padding-left: 360px;
 }
 
 .highlighter {

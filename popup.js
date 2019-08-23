@@ -16,8 +16,10 @@ function findNodeTree(event) {
     if (tree.length > 0)
         clearNodeTree();
     else {
-        html.append(nav);
+        html.prepend(nav);
     }
+
+    window.getComputedStyle(html);
 
     // set variables to elements that you clicked on
     el = event.target;
@@ -29,24 +31,13 @@ function findNodeTree(event) {
     console.log(el.getBoundingClientRect());
     getID();
     while(parentEl && parentEl.nodeName != '#document') {
-        setMultipleAttributes(parentEl, { 'data-cbcopy': 'true', 'data-cbnode': tree.length });
+        setMultipleAttributes(parentEl, { 'data-cbnode': tree.length });
         tree.push(parentEl);
         parentEl = parentEl.parentNode;
     }
 
-    // log the tree temporarily so we can see what we are looking at
-    console.log(tree);
-
     // create visual representation of tree
     createRepresentationOfTree();
-
-    // call text highlight function
-    triggerHighlightFunction();
-}
-
-// Placeholder function used to call highlighter div
-function triggerHighlightFunction() {
-    console.log('placeholder');
 }
 
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
