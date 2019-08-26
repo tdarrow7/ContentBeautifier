@@ -6,62 +6,84 @@ $('.btn-magic').click(function () {
 	let bodyText = document.querySelector('#ContentBox');
 	// createTree(bodyText);
 	removeGarb(bodyText);
-	restructureList(bodyText);
 	checkTypes(bodyText);
 	restructureTele(bodyText);
-	removePWithinLi(bodyText);
-	$(this).addClass('hide');
-	$('.btn-copy').removeClass('hide');
 
 });
 
-// run through the html and sperate tag types that we need
+// run through the html and seperate tag types that we need
 function checkTypes(element) {
-	let allTags = document.querySelectorAll('#ContentBox *');
-	let bTag = element.querySelectorAll('b');
-	let iTag = element.querySelectorAll('i');
-	let styleElm = element.querySelectorAll('*[style]');
-	let classElm = element.querySelectorAll('*[class]');
-	let linkElm = element.querySelectorAll('a');
-	let img = element.querySelectorAll('img');
-	let h1Tags = element.querySelectorAll('h1');
+	let parentN = element.parentNode;
+	
+	let bTag = parentN.querySelectorAll('b');
+	let iTag = parentN.querySelectorAll('i');
+	let styleElm = parentN.querySelectorAll('*[style]');
+	let classElm = parentN.querySelectorAll('*[class]');
+	let linkElm = parentN.querySelectorAll('a');
+	let img = parentN.querySelectorAll('img');
+	let h1Tags = parentN.querySelectorAll('h1');
 
 	checkH1(h1Tags);
 	swapbTag(bTag);
 	swapiTag(iTag);
-	imgFix(img);
+	
 	checkLinks(linkElm);
 	removeStyle(styleElm);
 	removeClass(classElm);
 	downloadAllItems(0);
 
-	allTags = document.querySelectorAll('#ContentBox *');
-	allTags.forEach(function (element) {
-		createTree(element);
-	});
-}
+	let allTags = parentN.querySelectorAll('*');
+	restructureTele(allTags);
+	switchStatements(allTags);
+	removeExtraNodes(allTags);
 
-function createTree(element) {
-	let tree = [];
-	tree.unshift(element.localName);
-	let parentEl = element.parentElement;
-	while (parentEl) {
-		tree.unshift(parentEl.localName);
-		parentEl = parentEl.parentElement;
+}
+function switchStatements(nodeList){
+	for (let i = 0; i < nodeList.length; i++){
+		let nodeType = element[i].nodeName;
+		switch(nodeType)
+		{
+			case "SPAN": 
+				let parentN = element.parentNode;
+				let removeSpanIf = ["UL", "OL", "LI", "P"];
+				if (removeSpanIf.includes(parentN.nodeName)){
+					element.outerHTML = element.innerHTML;
+				}
+				else{
+					// do nothing
+				}
+				break;
+			case "BR":
+				let parentN = element.parentNode;
+				let reformatBrIf = ["P"];
+				if (reformatBrIf.includes(parentN.nodeName)){
+					let newPTagList = parentN.innerHTML.split("<br>");
+					newPTagList = newPTagList.map(createNewP);
+					let pTagsConcat = newPTagList.join();
+					parentN.outerHTML = pTagsConcat;
+				}
+				else{
+					// do nothing
+				}
+				break;
+			case "IMG":
+				imgFix(element[i]);
+				break;
+			case "A":
+				
+		}
 	}
-	let className = "highlight-c-" + tree.length;
-	element.classList.add(className);
-	// console.log(tree.join(" > "), ", className: ", className);
-
+	
 }
 
-function removePWithinLi(element) {
-	let pWithinLi = element.querySelectorAll("li > p");
-	for (let i = 0; i < pWithinLi.length; i++) {
-		pWithinLi[i].outerHTML = pWithinLi[i].innerHTML;
-	}
+// creates '<p>' tag with innerHTML equal to 'string'
+function createNewP(string) {
+	let newP = document.createElement("p");
+	newP.innerHTML = string;
+	return newP;
 }
 
+// checks/handles element to make sure there is only one H1 header
 function checkH1(element) {
 	if (element.length > 1) {
 		for (let i = 1; i < element.length; i++) {
@@ -124,142 +146,49 @@ function imgFix(element) {
 }
 
 // cycle all elements and find instances of those in the list to be removed
-function removeGarb(element) {
-	let allElms = element.querySelectorAll("#ContentBox *");
-
-	// various categories to check for
-	let byOuterHTML = ["<o:p></o:p>"];
-	let byClass = ["MsoNormal"];
-	let byTag = ["span", "div", "#ContentBox > br"];
-
-	// remove based on OuterHTML comparison
-	for (let i = 0; i < allElms.length; i++) {
-		for (let j = 0; j < byOuterHTML.length; j++) {
-			if (allElms[i].outerHTML == byOuterHTML[j]) {
-				allElms[i].remove();
-			}
+function removeExtraNodes(nodeList) {
+	for (let i = 0; i < element.length; i++) {
+		// remove HTML comments
+		allTags[i].innerHTML = allTags[i].innerHTML.replace(/<!--.*?-->/g, "");
+		// replace non-breaking spaces with spaces
+		allTags[i].innerHTML = allTags[i].innerHTML.replace(/&nbsp;/g, " ");
+		// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
+		let temp = tagList[i].innerText.match(/[^\s\r\t\n]+/g);
+		
+		// if no matches (no 'words') exist
+		if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
+			tagList[i].remove();
 		}
-	}
-
-	// remove based on Tag
-	for (let i = 0; i < byTag.length; i++) {
-		// generate list of all of specified Tag
-		let tagList = element.querySelectorAll(byTag[i]);
-		// iterate through list
-		for (let j = 0; j < tagList.length; j++) {
-			// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
-			let temp = tagList[j].innerText.match(/[^\s\r\t\n]+/g);
-			// if no matches exist
-			if (temp === null) {
-				tagList[j].remove();
-			}
-			// if only one match exists
-			else if (temp.length == 1) {
-				// is it only 1 character
-				if (temp[0].length == 1) {
-					tagList[j].remove();
-				}
-				// it is more than 1 character long
-				else {
-					checkNReplace(tagList[j]);
-				}
-			}
-			else {
-				checkNReplace(tagList[j]);
-			}
-		}
-	}
-
-	// remove based on Class comparison
-	allElms = element.querySelectorAll("#ContentBox *");
-	for (let i = 0; i < allElms.length; i++) {
-		allElms[i].innerHTML = allElms[i].innerHTML.replace(/<!--.*?-->/g, "");
-		allElms[i].innerHTML = allElms[i].innerHTML.replace(/&nbsp;/g, " ");
-		for (let k = 0; k < byClass.length; k++) {
-			if (allElms[i].className == byClass[k] && allElms[i].innerHTML === "") {
-				allElms[i].remove();
-			}
-		}
-	}
-
-	allElms = element.querySelectorAll("#ContentBox *");
-
-}
-
-// checks Node's parentNode and replaces Tag respectively
-function checkNReplace(node) {
-	let parentN = node.parentNode;
-	// node's parentNode is 'ContentBox'
-	if (parentN.id == "ContentBox") {
-		// create and populate 'p' tag
-		let p = document.createElement("p");
-		p.innerText = node.innerText;
-		// replace old 'node' tag with new 'p' tag
-		parentN.replaceChild(p, node);
-	}
-	else {
-		// remove outer HTML tag
-		node.outerHTML = node.innerText;
 	}
 }
 
-
-
-function restructureTele(element) {
-	let allElms = element.querySelectorAll("#ContentBox *");
+function restructureTele(nodeList) {
+	// list of telephone number 'nodes' that need "tel: " links
 	let teleList = [];
-	for (let i = 0; i < allElms.length; i++) {
-		if ((/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g).exec(allElms[i].innerHTML)) {
-
-			// add to teleList if innerHTMl doesn't have 'tel:' in it'
-			if (allElms[i].innerHTML.search("tel:") == -1 && allElms[i].outerHTML.search("tel:") == -1) {
-				teleList.push(allElms[i]);
+	for (let i = 0; i < nodeList.length; i++) {
+		// searches for phone number with various formats
+		if ((/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g).exec(nodeList[i].innerHTML)) {
+			// add node to teleList if innerHTMl doesn't have "tel:" link in it
+			if (nodeList[i].innerHTML.search("tel:") == -1 && nodeList[i].outerHTML.search("tel:") == -1) {
+				teleList.push(nodeList[i]);
 			}
 		}
 	}
+	// takes teleList, strips each number of special characters, then creates a link for that node
 	for (let i = 0; i < teleList.length; i++) {
 		let foundTele = [];
 		foundTele = teleList[i].innerHTML.match(/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g);
 		for (let j = 0; j < foundTele.length; j++) {
+			// create anchor/link tag
 			let a = document.createElement("a");
 			a.href = "tel:" + foundTele[j].replace(/[\.\(\)\-]/g, "");
+			// populate anchor tag link area with new cleaned up number
 			a.innerHTML = foundTele[j];
+			// replace old node with newly made node with link
 			teleList[i].innerHTML = teleList[i].innerHTML.replace(foundTele[j], a.outerHTML);
 		}
 	}
 
-}
-
-function restructureList(element) {
-	let allElms = element.querySelectorAll("#ContentBox *"),
-		newUl;
-	for (let i = 0; i < allElms.length; i++) {
-		if (allElms[i].className == "MsoListParagraphCxSpFirst") {
-			newUl = document.createElement("ul");
-			newUl.appendChild(createNewLi(allElms[i]));
-			allElms[i].remove();
-		}
-		if (allElms[i].className == "MsoListParagraphCxSpMiddle") {
-			newUl.appendChild(createNewLi(allElms[i]));
-			allElms[i].remove();
-		}
-		if (allElms[i].className == "MsoListParagraphCxSpLast") {
-			var parentN = allElms[i].parentNode;
-			newUl.appendChild(createNewLi(allElms[i]));
-			parentN.replaceChild(newUl, allElms[i]);
-		}
-		if (allElms[i].className == "MsoListParagraph") {
-			newUl = document.createElement("ul");
-			newUl.appendChild(createNewLi(allElms[i]));
-			parentN.replaceChild(newUl, allElms[i]);
-		}
-	}
-}
-
-function createNewLi(element) {
-	let newLi = document.createElement("li");
-	newLi.innerHTML = element.innerHTML;
-	return newLi;
 }
 
 function checkLinks(elArray) {
