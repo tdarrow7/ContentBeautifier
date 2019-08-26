@@ -3,12 +3,9 @@ let el = null,
   parentEl = null,
   tree = [],
   nav = document.createElement("nav"),
-  html = document.querySelector("html");
+  html = document.querySelector("html"),
+  ctrlIsPressed = false;
 setMultipleAttributes(nav, { "data-nav": "", class: "data-nav" });
-
-//hsla(100, 50%, 60%, 1)
-// nav.setAttribute('data-nav', '');
-// nav.classList += 'data-nav';
 
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
@@ -44,12 +41,9 @@ function findNodeTree(event) {
 
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
-  // let nav = document.querySelector('[data-nav]');
-  // nav.remove();
   nav.innerHTML = "";
   for (let i = 0; i < tree.length; i++) {
     tree[i].removeAttribute("data-cbnode");
-    // nukeMultipleAttributes(tree[i], { 'data-cbnode', '' })
     tree[i].removeAttribute("style");
     if (tree[i].hasAttribute("data-cbcopy"))
       tree[i].removeAttribute("data-cbcopy");
@@ -64,7 +58,6 @@ function createRepresentationOfTree() {
 
   for (let i = tree.length - 1; i >= 0; i--) {
     let link = document.createElement("a");
-    // setMultipleAttributes(link, { 'data-cbnode': tree[i].getAttribute('data-cbnode'), 'href': 'javascript:void(0)', 'onmouseover': 'moveHoverHighlight(this)' });
     setMultipleAttributes(link, {
       "data-findnode": tree[i].getAttribute("data-cbnode"),
       href: "javascript:void(0)",
@@ -103,6 +96,12 @@ function moveCopyAttribute(el) {
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
   event.preventDefault();
+
+  // this is for testing
+  if (ctrlIsPressed) {
+    console.log('success!');
+  }
+
   if (
     !event.target.parentNode.hasAttribute("data-nav") &&
     !event.target.hasAttribute("data-nav")
@@ -111,3 +110,19 @@ window.addEventListener("click", () => {
   else if (event.target.hasAttribute("data-findnode"))
     moveCopyAttribute(event.target);
 });
+
+// document.onkeydown = function(e) {
+//   e = e || window.event;
+//   if (e.keyCode == 17) {
+//     ctrlIsPressed = true;
+//     console.log('ctrl is pressed');
+//   }
+// }
+
+// document.onkeyup = function(e) {
+//   e = e || window.event;
+//   if (e.keyCode == 17) {
+//     ctrlIsPressed = false;
+//     console.log('ctrl is depressed');
+//   }
+// }
