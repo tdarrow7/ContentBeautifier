@@ -8,19 +8,13 @@ function reformatEverythingEverywhere(element) {
 	// let parentN = element.parentNode;
 	
 	let allElms = element.querySelectorAll('*'),
-		bTag = element.querySelectorAll('b'),
-		iTag = element.querySelectorAll('i'),
-	// let styleElm = element.querySelectorAll('*[style]');
-	// let classElm = element.querySelectorAll('*[class]');
-		h1Tags = element.querySelectorAll('h1').shift();
+		h1Tags = element.querySelectorAll('h1');
 
 	allElms.push(element);
 	
 	VerifySingleH1(h1Tags);
 	swapElTypes(element.querySelectorAll('b'), 'strong');
 	swapElTypes(element.querySelectorAll('i'), 'em');
-	swapbTag(bTag);
-	swapiTag(iTag);
 	
 	// remove all classes and styles for all elements
 	removeAttribute(allElms, 'class');
