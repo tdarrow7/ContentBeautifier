@@ -16,7 +16,9 @@
             ],
             "js": [
                 "highlighter.js",
-                "popup.js"
+                "popup.js",
+                "button.js",
+                "main.js"
             ]
         }
     ],
