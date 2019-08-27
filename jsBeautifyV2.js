@@ -1,6 +1,8 @@
 let downloadArray = [],
 	errorArray = [];
 
+	console.log('inside v2');
+
 // run through the HTML and Reformat EVERYTHING
 function reformatEverythingEverywhere(element) {
 
@@ -55,13 +57,13 @@ function switchStatements(nodeList){
 					nodeList[i].outerHTML = nodeList[i].innerHTML;
 				break;
 			case "BR":
-				let parentN = nodeList[i].parentNode,
+				let parentN2 = nodeList[i].parentNode,
 					reformatBrIf = ["P"];
-				if (reformatBrIf.includes(parentN.nodeName)){
-					let newPTagList = parentN.innerHTML.split("<br>");
+				if (reformatBrIf.includes(parentN2.nodeName)){
+					let newPTagList = parentN2.innerHTML.split("<br>");
 					newPTagList = newPTagList.map(createNewP);
 					let pTagsConcat = newPTagList.join();
-					parentN.outerHTML = pTagsConcat;
+					parentN2.outerHTML = pTagsConcat;
 				}
 				break;
 			case "IMG":
