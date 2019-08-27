@@ -64,9 +64,6 @@ function switchStatements(nodeList){
 				break;
 			case "A":
 				checkLinks(nodeList[i]);
-				downloadAllItems(0);
-				// reset 'downloadArray' for new downloadArray items
-				downloadArray = [];
 				break;
 		}
 
@@ -85,6 +82,8 @@ function switchStatements(nodeList){
 		}
 
 		//-------------------------------------------------------------------//
+		// download everything in downloadArray
+		downloadAllItems(0);
 	}
 	
 }
