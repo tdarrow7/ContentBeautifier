@@ -9,9 +9,10 @@ function reformatEverythingEverywhere(element) {
 	
 	// let parentN = element.parentNode;
 	
-	let allElms = element.querySelectorAll('*'),
+	let nodeElms = element.querySelectorAll('*'),
 		h1Tags = element.querySelectorAll('h1');
 
+	let allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
 	
 	VerifySingleH1(h1Tags);
@@ -23,13 +24,13 @@ function reformatEverythingEverywhere(element) {
 	removeAttribute(allElms, 'style');
 
 	// recall all elements after doing modifications
-	allElms = element.querySelectorAll('*');
+	nodeElms = element.querySelectorAll('*');
 	allElms.push(element);
 	// check phone number formatting in text
 	restructureTele(allElms);
 
 	// recall all elements after checking for phone numbers
-	allElms = element.querySelectorAll('*');
+	nodeElms = element.querySelectorAll('*');
 	allElms.push(element);
 	switchStatements(allElms);
 }
@@ -105,7 +106,8 @@ function createNewP(string) {
 }
 
 // checks/handles element to make sure there is only one H1 header
-function VerifySingleH1(elArray) {
+function VerifySingleH1(nodeArray) {
+	let elArray = Array.prototype.slice.call(nodeArray);
 	elArray.unshift();
 	if (elArray.length > 0) 
 		swapElTypes(elArray, 'h2');

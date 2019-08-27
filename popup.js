@@ -110,7 +110,7 @@ window.addEventListener("click", () => {
   else if (event.target.hasAttribute("data-findnode"))
     moveCopyAttribute(event.target);
     else if (event.target.classList.contains('copy')) {
-      reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'))
+      reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));
     }
 });
 
