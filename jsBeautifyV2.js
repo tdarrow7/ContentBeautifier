@@ -16,8 +16,16 @@ function reformatEverythingEverywhere(element) {
 	allElms.push(element);
 	
 	VerifySingleH1(h1Tags);
-	swapElTypes(element.querySelectorAll('b'), 'strong');
-	swapElTypes(element.querySelectorAll('i'), 'em');
+	let bTags = Array.prototype.slice.call(element.querySelectorAll('b'));
+	if (element.nodeName == "B"){
+		bTags.push(element);
+	}
+	let iTags = Array.prototype.slice.call(element.querySelectorAll('i'));
+	if (element.nodeName == "I"){
+		iTags.push(element);
+	}
+	swapElTypes(bTags, 'strong');
+	swapElTypes(iTags, 'em');
 	
 	// remove all classes and styles for all elements
 	removeAttribute(allElms, 'class');
@@ -25,13 +33,16 @@ function reformatEverythingEverywhere(element) {
 
 	// recall all elements after doing modifications
 	nodeElms = element.querySelectorAll('*');
+	allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
 	// check phone number formatting in text
 	restructureTele(allElms);
 
 	// recall all elements after checking for phone numbers
 	nodeElms = element.querySelectorAll('*');
+	allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
+	
 	switchStatements(allElms);
 }
 
@@ -114,7 +125,8 @@ function VerifySingleH1(nodeArray) {
 }
 
 // cycle through all items with classes and remove the classes
-function removeAttribute(elmArray, attrName) {
+function removeAttribute(nodeArray, attrName) {
+	let elmArray = Array.prototype.slice.call(nodeArray);
 	for (let i = 0; i < elmArray.length; i++) {
 		elmArray[i].removeAttribute(attrName);
 	}
