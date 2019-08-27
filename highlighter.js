@@ -32,7 +32,7 @@ function getID() {
     "data-cbspecial": ""
   });
   setAttributes(copyButton, {
-    class: "cb-btn v1",
+    class: "cb-btn v1 copy",
     "data-cbcopy": "single",
     "data-cbspecial": "",
     style:
