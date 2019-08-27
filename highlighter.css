@@ -3,12 +3,6 @@ html[data-cbnode] {
   /* display: flex; */
 }
 
-html[data-cbnode] > body {
-  /* width: calc(100% - 360px); */
-  /* margin-right: auto; */
-  /* padding-left: 360px; */
-}
-
 .highlighter {
   display: block !important;
   position: absolute !important;
