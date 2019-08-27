@@ -103,12 +103,15 @@ window.addEventListener("click", () => {
   }
 
   if (
-    !event.target.parentNode.hasAttribute("data-nav") &&
-    !event.target.hasAttribute("data-nav")
+    // !event.target.parentNode.hasAttribute("data-nav") &&
+    !event.target.hasAttribute("data-cbspecial")
   )
     findNodeTree(event);
   else if (event.target.hasAttribute("data-findnode"))
     moveCopyAttribute(event.target);
+    else if (event.target.classList.contains('copy')) {
+      reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'))
+    }
 });
 
 // document.onkeydown = function(e) {
