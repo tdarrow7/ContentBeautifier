@@ -1,18 +1,9 @@
 let downloadArray = [],
 	errorArray = [];
 
-
-$('.btn-magic').click(function () {
-	let bodyText = document.querySelector('#ContentBox');
-	// createTree(bodyText);
-	removeGarb(bodyText);
-	checkTypes(bodyText);
-	restructureTele(bodyText);
-
-});
-
 // run through the html and seperate tag types that we need
-function checkTypes(element) {
+function eformatEverythingEverywhere(element) {
+
 	let parentN = element.parentNode;
 	
 	let bTag = parentN.querySelectorAll('b');
@@ -26,35 +17,35 @@ function checkTypes(element) {
 	checkH1(h1Tags);
 	swapbTag(bTag);
 	swapiTag(iTag);
-	
-	checkLinks(linkElm);
+
 	removeStyle(styleElm);
 	removeClass(classElm);
-	downloadAllItems(0);
-
+	
+	// select the item clicked on and all its descendants 
 	let allTags = parentN.querySelectorAll('*');
 	restructureTele(allTags);
+	allTags = parentN.querySelectorAll('*');
 	switchStatements(allTags);
-	removeExtraNodes(allTags);
 
 }
 function switchStatements(nodeList){
 	for (let i = 0; i < nodeList.length; i++){
-		let nodeType = element[i].nodeName;
+		let nodeType = nodeList[i].nodeName;
+
 		switch(nodeType)
 		{
 			case "SPAN": 
-				let parentN = element.parentNode;
+				let parentN = nodeList[i].parentNode;
 				let removeSpanIf = ["UL", "OL", "LI", "P"];
 				if (removeSpanIf.includes(parentN.nodeName)){
-					element.outerHTML = element.innerHTML;
+					nodeList[i].outerHTML = nodeList[i].innerHTML;
 				}
 				else{
 					// do nothing
 				}
 				break;
 			case "BR":
-				let parentN = element.parentNode;
+				let parentN = nodeList[i].parentNode;
 				let reformatBrIf = ["P"];
 				if (reformatBrIf.includes(parentN.nodeName)){
 					let newPTagList = parentN.innerHTML.split("<br>");
@@ -67,11 +58,34 @@ function switchStatements(nodeList){
 				}
 				break;
 			case "IMG":
-				imgFix(element[i]);
+				imgFix(nodeList[i]);
+				downloadAllItems(0);
+				// reset 'downloadArray' for new downloadArray items
+				downloadArray = [];
 				break;
 			case "A":
-				
+				checkLinks(linkElm);
+				downloadAllItems(0);
+				// reset 'downloadArray' for new downloadArray items
+				downloadArray = [];
+				break;
 		}
+
+		//-------------WAS INITIALLY "removeExtraNodes" function-------------//
+
+		// remove HTML comments
+		nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/<!--.*?-->/g, "");
+		// replace non-breaking spaces with spaces
+		nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/&nbsp;/g, " ");
+		// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
+		let temp = nodeList[i].innerText.match(/[^\s\r\t\n]+/g);
+		
+		// if no matches (no 'words') exist
+		if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
+			nodeList[i].remove();
+		}
+
+		//-------------------------------------------------------------------//
 	}
 	
 }
@@ -145,23 +159,6 @@ function imgFix(element) {
 	}
 }
 
-// cycle all elements and find instances of those in the list to be removed
-function removeExtraNodes(nodeList) {
-	for (let i = 0; i < element.length; i++) {
-		// remove HTML comments
-		allTags[i].innerHTML = allTags[i].innerHTML.replace(/<!--.*?-->/g, "");
-		// replace non-breaking spaces with spaces
-		allTags[i].innerHTML = allTags[i].innerHTML.replace(/&nbsp;/g, " ");
-		// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
-		let temp = tagList[i].innerText.match(/[^\s\r\t\n]+/g);
-		
-		// if no matches (no 'words') exist
-		if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
-			tagList[i].remove();
-		}
-	}
-}
-
 function restructureTele(nodeList) {
 	// list of telephone number 'nodes' that need "tel: " links
 	let teleList = [];
@@ -188,7 +185,6 @@ function restructureTele(nodeList) {
 			teleList[i].innerHTML = teleList[i].innerHTML.replace(foundTele[j], a.outerHTML);
 		}
 	}
-
 }
 
 function checkLinks(elArray) {
@@ -223,7 +219,6 @@ function downloadElement(el) {
 	}
 }
 
-
 // download all items from array
 function downloadAllItems(i) {
 	if (i < downloadArray.length) {
@@ -232,14 +227,5 @@ function downloadAllItems(i) {
 			i++;
 			downloadAllItems(i);
 		}, 100);
-	}
-}
-
-//
-function printErrors() {
-	for (let i = 0; i < errorArray.length; i++) {
-		let p = document.createElement('p');
-		p.textContent = errorArray[i];
-		$('#ContentBox').appendChild(p);
 	}
 }
