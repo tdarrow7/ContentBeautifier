@@ -1,8 +1,8 @@
 let downloadArray = [],
 	errorArray = [];
 
-// run through the html and seperate tag types that we need
-function eformatEverythingEverywhere(element) {
+// run through the HTML and Reformat EVERYTHING
+function reformatEverythingEverywhere(element) {
 
 	let parentN = element.parentNode;
 	
@@ -59,12 +59,11 @@ function switchStatements(nodeList){
 				break;
 			case "IMG":
 				imgFix(nodeList[i]);
-				downloadAllItems(0);
 				// reset 'downloadArray' for new downloadArray items
 				downloadArray = [];
 				break;
 			case "A":
-				checkLinks(linkElm);
+				checkLinks(nodeList[i]);
 				downloadAllItems(0);
 				// reset 'downloadArray' for new downloadArray items
 				downloadArray = [];
