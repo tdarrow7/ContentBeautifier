@@ -12,7 +12,8 @@
                 "<all_urls>"
             ],
             "css": [
-                "highlighter.css"
+                "highlighter.css",
+                "button.css"
             ],
             "js": [
                 "highlighter.js",

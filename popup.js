@@ -28,7 +28,7 @@ function findNodeTree(event) {
   });
   tree.push(el);
   console.log(el.getBoundingClientRect());
-  getID();
+  changePosition(el);
   while (parentEl && parentEl.nodeName != "#document") {
     setMultipleAttributes(parentEl, { "data-cbnode": tree.length });
     tree.push(parentEl);
@@ -90,7 +90,7 @@ function moveCopyAttribute(el) {
   removecopy.classList.remove("active");
   let newNode = document.querySelector('[data-cbnode="' + cnodeval + '"]');
   newNode.setAttribute("data-cbcopy", "true");
-  getID();
+  changePosition(newNode);
 }
 
 // listen for click events in the window. On click, call findNodeTree function
