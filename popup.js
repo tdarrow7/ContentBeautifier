@@ -4,8 +4,10 @@ let el = null,
   tree = [],
   nav = document.createElement("nav"),
   html = document.querySelector("html"),
+  div = document.createElement("div"),
   ctrlIsPressed = false;
 setMultipleAttributes(nav, { "data-nav": "", class: "data-nav" });
+setMultipleAttributes(div, {"previewBox" : "", class: "previewBox"});
 
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
@@ -13,6 +15,7 @@ function findNodeTree(event) {
   if (tree.length > 0) clearNodeTree();
   else {
     html.prepend(nav);
+    html.prepend(div);
   }
 
   window.getComputedStyle(html);
@@ -42,6 +45,7 @@ function findNodeTree(event) {
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
   nav.innerHTML = "";
+  div.innerHTML = "";
   for (let i = 0; i < tree.length; i++) {
     tree[i].removeAttribute("data-cbnode");
     tree[i].removeAttribute("style");
@@ -96,6 +100,18 @@ function moveCopyAttribute(el) {
 
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
+  // console.log("event.target: ", event.target);
+  // console.log("QuerySelector Value: ", document.querySelector('i[toggle="true"]')) ;
+  // console.log("Toggle True: ", event.target.contains(document.querySelector('i[toggle="true"]')) );
+  // console.log("Toggle False: ", event.target.contains(document.querySelector('i[toggle="false"]')) );
+  if (event.target.contains(document.querySelector('i[toggle="true"]'))){
+    console.log("toggle on");
+
+  }
+  if (event.target.contains(document.querySelector('i[toggle="false"]'))){
+    console.log("toggle off");
+  }
+
   if (ctrlIsPressed){
     event.preventDefault(); 
   }
@@ -110,7 +126,13 @@ window.addEventListener("click", () => {
     moveCopyAttribute(event.target);
   }
   if (event.target.classList.contains('copy')) {
-      reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));
+      let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
+      reformatEverythingEverywhere(temp);
+      
+      div.appendChild(temp);
+
+      
+      // reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));
   }
   // console.log("event.target.classList: ",  event.target.classList);
   // console.log("event.target.classList.contains('copy'): ",  event.target.classList.contains('copy'));

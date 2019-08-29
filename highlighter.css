@@ -105,6 +105,15 @@ body .cb-btn {
   transform: none !important;
 }
 
+[previewBox]{
+    z-index: 3000;
+    background: red;
+    position: fixed;
+    left: 340px;
+    top: 200px;
+    width: 75%;
+}
+
 [data-nav] > a:hover,
 [data-nav] > a.active:hover,
 [data-nav] > a.active ~ a:hover {
