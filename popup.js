@@ -96,23 +96,24 @@ function moveCopyAttribute(el) {
 
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
-  // event.preventDefault(); 
-  
-  // this is for testing
-  if (ctrlIsPressed) {
-    console.log('success!');
+  if (ctrlIsPressed){
+    event.preventDefault(); 
   }
-
   if (
     // !event.target.parentNode.hasAttribute("data-nav") &&
     !event.target.hasAttribute("data-cbspecial")
   )
-    findNodeTree(event);
-  else if (event.target.hasAttribute("data-findnode"))
+    if (ctrlIsPressed){
+      findNodeTree(event);
+    }
+  if (event.target.hasAttribute("data-findnode")){
     moveCopyAttribute(event.target);
-  else if (event.target.classList.contains('copy')) {
-    reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));
   }
+  if (event.target.classList.contains('copy')) {
+      reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));
+  }
+  // console.log("event.target.classList: ",  event.target.classList);
+  // console.log("event.target.classList.contains('copy'): ",  event.target.classList.contains('copy'));
 });
 
 document.onkeydown = function(e) {
