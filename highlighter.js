@@ -96,5 +96,8 @@ function checkScrollPositon(top, bodyTop) {
     });
 }
 
-document.body.appendChild(highlight);
-document.body.appendChild(copyButton);
+console.log("Document.Body: ", document.body);
+if(document.body != null){
+  document.body.appendChild(highlight);
+  document.body.appendChild(copyButton);
+}

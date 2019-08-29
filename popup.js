@@ -93,10 +93,11 @@ function moveCopyAttribute(el) {
   getID();
 }
 
+
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
-  event.preventDefault();
-
+  // event.preventDefault(); 
+  
   // this is for testing
   if (ctrlIsPressed) {
     console.log('success!');
@@ -109,23 +110,23 @@ window.addEventListener("click", () => {
     findNodeTree(event);
   else if (event.target.hasAttribute("data-findnode"))
     moveCopyAttribute(event.target);
-    else if (event.target.classList.contains('copy')) {
-      reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));
-    }
+  else if (event.target.classList.contains('copy')) {
+    reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));
+  }
 });
 
-// document.onkeydown = function(e) {
-//   e = e || window.event;
-//   if (e.keyCode == 17) {
-//     ctrlIsPressed = true;
-//     console.log('ctrl is pressed');
-//   }
-// }
+document.onkeydown = function(e) {
+  e = e || window.event;
+  if (e.keyCode == 17) {
+    ctrlIsPressed = true;
+    console.log('ctrl is pressed');
+  }
+}
 
-// document.onkeyup = function(e) {
-//   e = e || window.event;
-//   if (e.keyCode == 17) {
-//     ctrlIsPressed = false;
-//     console.log('ctrl is depressed');
-//   }
-// }
+document.onkeyup = function(e) {
+  e = e || window.event;
+  if (e.keyCode == 17) {
+    ctrlIsPressed = false;
+    console.log('ctrl is depressed');
+  }
+}
