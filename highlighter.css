@@ -55,24 +55,24 @@ html[data-cbnode] > body {
   width: 20em;
 }
 
-[data-nav] > a {
+[data-nav] .nav-div > a {
   color: gray;
   transition: color 0.4s ease 0s, transform 0.6s ease 0s;
   display: block;
 }
 
-[data-nav] > a.active,
-[data-nav] > a.active ~ a {
+[data-nav] .nav-div > a.active,
+[data-nav] .nav-div > a.active ~ a {
   color: rgba(4, 134, 255, 1);
 }
 
-[data-nav]:hover > a {
+[data-nav] .nav-div:hover  > a {
   transform: none !important;
 }
 
-[data-nav] > a:hover,
-[data-nav] > a.active:hover,
-[data-nav] > a.active ~ a:hover {
+[data-nav] .nav-div > a:hover,
+[data-nav] .nav-div > a.active:hover,
+[data-nav] .nav-div > a.active ~ a:hover {
   color: #ffffff;
 }
 

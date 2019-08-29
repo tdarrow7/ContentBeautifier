@@ -1,3 +1,9 @@
+function changePosition(el) {
+    var arr = getPosition(el);
+    changeHighlightPosition(arr);
+    changePageButtonPosition(arr);
+}
+
 function getPosition(el) {
     let bodyRect = document.body.getBoundingClientRect(),
         elemRect = el.getBoundingClientRect(),
@@ -31,10 +37,4 @@ function setAttributes(el, attrs) {
     for (var key in attrs) {
         el.setAttribute(key, attrs[key]);
     }
-}
-
-function changePosition(el) {
-    var arr = getPosition(el);
-    changeHighlightPosition(arr);
-    changeButtonPosition(arr);
 }
