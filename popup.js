@@ -106,7 +106,8 @@ window.addEventListener("click", () => {
   if (
     !event.target.parentNode.hasAttribute("data-nav") &&
     !event.target.hasAttribute("data-nav") &&
-    !event.target.parentNode.hasAttribute("nav-div")
+    !event.target.parentNode.hasAttribute("nav-div") &&
+    !event.target.hasAttribute("data-cbspecial")
   )
     if (ctrlIsPressed){
       findNodeTree(event);
