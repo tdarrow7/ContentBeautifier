@@ -18,7 +18,6 @@
             "js": [
                 "highlighter.js",
                 "jsBeautifyV2.js",
-                "popup.js"
                 "popup.js",
                 "button.js",
                 "main.js"
