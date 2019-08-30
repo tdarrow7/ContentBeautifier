@@ -106,7 +106,7 @@ body .cb-btn {
 }
 
 [previewBox]{
-    z-index: 3000;
+    z-index: -999;
     padding: 10px;
     background: white;
     position: fixed;
@@ -114,14 +114,66 @@ body .cb-btn {
     top: 200px;
     max-width: 65%;
     min-width: 30%;
+    opacity: 0;
+    transition: opacity .4s ease 0s;
 }
+
 [previewContainer]{
-  z-index: 2999;
+  z-index: -1000;
   background-color: rgba(0, 0, 0, .6);
-  fill-opacity: 20%;
   position: fixed;
   width: 100%;
   height: 100%;
+  opacity: 0;
+  transition: opacity .4s ease 0s;
+
+}
+
+.previewClicked [previewBox] {
+  z-index: 15000;
+  opacity: 1;
+}
+
+.previewClicked [previewContainer] {
+  z-index: 14999;
+  opacity: 1;
+  cursor: pointer;
+}
+
+[previewClose] a:after {
+  width: 30px;
+  height: 4px;
+  background-color: black;
+  content: '';
+  position: absolute;
+  right: 5px;
+  top: 20px;
+  transform: rotate(45deg);
+}
+
+[previewClose] a:before {
+  width: 30px;
+  height: 4px;
+  background-color: black;
+  content: '';
+  position: absolute;
+  right: 5px;
+  top: 20px;
+  transform: rotate(-45deg);
+}
+
+[previewBox] span {
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  padding: 0 0;
+  right: 5px;
+  top: 10px;
+  cursor: pointer;
+}
+
+div.previewBox:nth-child(2) {
+  margin: 50px 0 0 0;
 }
 
 [data-nav] > a:hover,

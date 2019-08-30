@@ -40,6 +40,7 @@ function reformatEverythingEverywhere(element) {
 
 	// recall all elements after checking for phone numbers
 	nodeElms = element.querySelectorAll('*');
+	console.log("AllElms: ", nodeElms);
 	allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
 	
@@ -56,20 +57,26 @@ function swapElTypes(listofElms, nameOfElm) {
 }
 
 function switchStatements(nodeList){
+	console.log("switchStatements nodeList: ", nodeList)
 	for (let i = 0; i < nodeList.length; i++){
+		console.log("NodeList[i]: ", nodeList[i]);
+		console.log("NodeList[i].nodeName: ", nodeList[i].nodeName);
+		// console.log("parentN: ", nodeList[i].parentNode);
 		let nodeType = nodeList[i].nodeName;
 
 		switch(nodeType)
 		{
 			case "SPAN": 
 				// if span is a child of a paragraph or list, get rid of span element and keep text
-				let parentN = nodeList[i].parentNode,
+				let parentN = document.querySelector(nodeList[i]).parentNode,
 					removeSpanIf = ["UL", "OL", "LI", "P"];
+				console.log("parentN: ", parentN);
+				console.log("parentN.nodeName: ", parentN.nodeName);
 				if (removeSpanIf.includes(parentN.nodeName))
 					nodeList[i].outerHTML = nodeList[i].innerHTML;
 				break;
 			case "BR":
-				let parentN2 = nodeList[i].parentNode,
+				let parentN2 = document.querySelector(nodeList[i]).parentNode,
 					reformatBrIf = ["P"];
 				if (reformatBrIf.includes(parentN2.nodeName)){
 					let newPTagList = parentN2.innerHTML.split("<br>");
