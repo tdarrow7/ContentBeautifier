@@ -1,30 +1,24 @@
-var body = document.getElementsByTagName('body');
-var highlight = document.createElement('div');
+let highlight = document.createElement("div"),
+  hoverHighlight = document.createElement("div");
 
-// document.addEventListener('click', function (e) {
-//     var item = e.target;
-//     getID(item);
-// });
+function changeHighlightPosition(arr) {
+  let { height, width, left, top } = arr;
+  var styleString =
+    "visibility: visible !important; opacity: 1 !important; height: " +
+    height +
+    "px; width: " +
+    width +
+    "px; left: " +
+    left +
+    "px; top: " +
+    top +
+    "px";
 
-// commented out by tim
-
-function setAttributes(el, attrs) {
-    for (var key in attrs) {
-        el.setAttribute(key, attrs[key]);
-    }
-}
-
-function getID(el) {
-
-    let bodyRect = document.body.getBoundingClientRect(),
-        elemRect = el.getBoundingClientRect(),
-        top = (elemRect.top - bodyRect.top),
-        left = (elemRect.left - bodyRect.left);
-    var styleString = "position: absolute !important; visibility: visible !important; opacity: 1 !important; height: " + el.offsetHeight + "px; width: " + el.offsetWidth + "px; left: " + left + "px; top: " + top + "px";
-    setAttributes(highlight, {
-        "class": "highlighter",
-        "style": styleString
-    });
+  setAttributes(highlight, {
+    class: "highlighter",
+    style: styleString,
+    "data-cbspecial": ""
+  })
 }
 
 document.body.appendChild(highlight);
