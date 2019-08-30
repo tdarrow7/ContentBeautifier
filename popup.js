@@ -4,10 +4,15 @@ let el = null,
   tree = [],
   nav = document.createElement("nav"),
   html = document.querySelector("html"),
+  divContainer = document.createElement("div"),
   div = document.createElement("div"),
+  a = document.createElement("a"),
   ctrlIsPressed = false;
 setMultipleAttributes(nav, { "data-nav": "", class: "data-nav" });
 setMultipleAttributes(div, {"previewBox" : "", class: "previewBox"});
+setMultipleAttributes(divContainer, {"previewContainer" : "", class: "previewContainer"});
+setMultipleAttributes(a, {"previewClose" : "", class: "previewClose"});
+divContainer.append(div);
 
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
@@ -15,7 +20,7 @@ function findNodeTree(event) {
   if (tree.length > 0) clearNodeTree();
   else {
     html.prepend(nav);
-    html.prepend(div);
+    html.prepend(divContainer);
   }
 
   window.getComputedStyle(html);
