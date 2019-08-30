@@ -124,7 +124,9 @@ window.addEventListener("click", () => {
 
 document.onkeydown = function(e) {
   e = e || window.event;
-  if (e.keyCode == 17) {
+  // console.log(e.code);
+  let code = e.code.toString();
+  if (code == 'ControlLeft' || code == 'ControlRight') {
     ctrlIsPressed = true;
     console.log('ctrl is pressed');
   }
@@ -132,7 +134,8 @@ document.onkeydown = function(e) {
 
 document.onkeyup = function(e) {
   e = e || window.event;
-  if (e.keyCode == 17) {
+  let code = e.code.toString();
+  if (code == 'ControlLeft' || code == 'ControlRight') {
     ctrlIsPressed = false;
     console.log('ctrl is depressed');
   }
