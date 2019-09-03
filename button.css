@@ -5,6 +5,7 @@
   
   body .btn-container {
     position: absolute !important;
+    transition: 0.15s !important;
   }
 
   .btn-container .cb-btn:first-child {
@@ -55,10 +56,10 @@
   
   .cb-btn.v2 {
       color: #ffffff;
+      background-color: #6D6D6D;
+    }
+    
+    .cb-btn.v2:hover {
       background-color: #3D3D3D;
-  }
-  
-  .cb-btn.v2:hover {
-    background-color: #6D6D6D;
-    color: #ffffff;
+      color: #ffffff;
   }
