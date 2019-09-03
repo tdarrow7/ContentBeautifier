@@ -14,6 +14,8 @@ function reformatEverythingEverywhere(element) {
 
 	let allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
+	console.log("Before anything gets modified (nodeElms NodeList): ", nodeElms);
+	console.log("Before anything gets modified (allElms Array): ", allElms);
 	
 	VerifySingleH1(h1Tags);
 	let bTags = Array.prototype.slice.call(element.querySelectorAll('b'));
@@ -68,7 +70,7 @@ function switchStatements(nodeList){
 		{
 			case "SPAN": 
 				// if span is a child of a paragraph or list, get rid of span element and keep text
-				let parentN = document.querySelector(nodeList[i]).parentNode,
+				let parentN = nodeList[i].parentNode,
 					removeSpanIf = ["UL", "OL", "LI", "P"];
 				console.log("parentN: ", parentN);
 				console.log("parentN.nodeName: ", parentN.nodeName);
@@ -76,7 +78,7 @@ function switchStatements(nodeList){
 					nodeList[i].outerHTML = nodeList[i].innerHTML;
 				break;
 			case "BR":
-				let parentN2 = document.querySelector(nodeList[i]).parentNode,
+				let parentN2 = nodeList[i].parentNode,
 					reformatBrIf = ["P"];
 				if (reformatBrIf.includes(parentN2.nodeName)){
 					let newPTagList = parentN2.innerHTML.split("<br>");

@@ -137,8 +137,20 @@ window.addEventListener("click", () => {
   }
   if (event.target.classList.contains('copy')) {
     if (div.childNodes.length == 1){
-      console.log("document.querySelector: ", document.querySelector('body [data-cbcopy="true"]'));
+      let og = document.querySelectorAll('body [data-cbcopy="true"] *');
+      console.log("original tree node: ", document.querySelector('body [data-cbcopy="true"]'));
       let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
+      console.log("temp: ", temp);
+
+      let allElms = Array.prototype.slice.call(temp.querySelectorAll("*"));
+
+      for (let i = 0; i < allElms.length; i++){
+        // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
+        console.log("AllElms Node[i]: ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
+      }
+
+      console.log("temp tree node:", temp);
+      // reformatEverythingEverywhere(temp);
       reformatEverythingEverywhere(temp);
       
       div.appendChild(temp);
@@ -159,6 +171,10 @@ document.onkeydown = function(e) {
     ctrlIsPressed = true;
     console.log('ctrl is pressed');
   }
+  if (e.keyCode == 27) {
+    esclIsPressed = true;
+    console.log('esc is pressed');
+  }
 }
 
 document.onkeyup = function(e) {
@@ -166,5 +182,9 @@ document.onkeyup = function(e) {
   if (e.keyCode == 17) {
     ctrlIsPressed = false;
     console.log('ctrl is depressed');
+  }
+  if (e.keyCode == 27) {
+    escIsPressed = false;
+    console.log('esc is depressed');
   }
 }
