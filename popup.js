@@ -151,9 +151,11 @@ window.addEventListener("click", () => {
 
       console.log("temp tree node:", temp);
       // reformatEverythingEverywhere(temp);
-      reformatEverythingEverywhere(temp);
+      
       
       div.appendChild(temp);
+
+      reformatEverythingEverywhere(temp);
     } 
     html.classList.toggle("previewClicked");
       // reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));

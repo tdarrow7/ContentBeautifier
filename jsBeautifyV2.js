@@ -14,6 +14,10 @@ function reformatEverythingEverywhere(element) {
 
 	let allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
+	for (let i = 0; i < allElms.length; i++){
+        // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
+        console.log("Beginning of Function, All Elms "+ i + ": ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
+	}
 	console.log("Before anything gets modified (nodeElms NodeList): ", nodeElms);
 	console.log("Before anything gets modified (allElms Array): ", allElms);
 	
@@ -40,11 +44,21 @@ function reformatEverythingEverywhere(element) {
 	// check phone number formatting in text
 	restructureTele(allElms);
 
+	for (let i = 0; i < allElms.length; i++){
+        // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
+        console.log("After Restructure Tele All Elms "+ i + ": ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
+	}
+
 	// recall all elements after checking for phone numbers
 	nodeElms = element.querySelectorAll('*');
 	console.log("AllElms: ", nodeElms);
 	allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
+
+	for (let i = 0; i < allElms.length; i++){
+        // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
+        console.log("Before SwitchStatement All Elms "+ i + ": ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
+	}
 	
 	switchStatements(allElms);
 }
@@ -59,28 +73,50 @@ function swapElTypes(listofElms, nameOfElm) {
 }
 
 function switchStatements(nodeList){
-	console.log("switchStatements nodeList: ", nodeList)
+	console.log("switchStatements nodeList: ", nodeList);
 	for (let i = 0; i < nodeList.length; i++){
-		console.log("NodeList[i]: ", nodeList[i]);
-		console.log("NodeList[i].nodeName: ", nodeList[i].nodeName);
-		// console.log("parentN: ", nodeList[i].parentNode);
+        // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
+        console.log("Within switchStatements function before cases nodeList "+ i + ": ", nodeList[i], "    What's the parentNode?: ", nodeList[i].parentNode);
+	}
+	
+	// console.log("newRestructured element: ", nodeList[0]);
+	// console.log("newRestructured element: ", recursiveRestructure(nodeList[0]));
+	for (let i = 0; i < nodeList.length; i++){
+		console.log("NodeList["+i+"]: ", nodeList[i]);
+		console.log("NodeList["+i+"].nodeName: ", nodeList[i].nodeName);
+		console.log("parentN["+i+"]: ", nodeList[i].parentNode);
+	
+
 		let nodeType = nodeList[i].nodeName;
+		let parentN = nodeList[i].parentNode;
 
 		switch(nodeType)
 		{
 			case "SPAN": 
-				// if span is a child of a paragraph or list, get rid of span element and keep text
-				let parentN = nodeList[i].parentNode,
+				console.log("is a span");
+				console.log("parentN: : ", parentN);
+				let parentN2 = nodeList[i].parentNode;
+				console.log("parentN2: : ", parentN2);
+				let parentN2Name = parentN2.nodeName,
 					removeSpanIf = ["UL", "OL", "LI", "P"];
-				console.log("parentN: ", parentN);
-				console.log("parentN.nodeName: ", parentN.nodeName);
-				if (removeSpanIf.includes(parentN.nodeName))
+				console.log("parentN2.nodeName : ", parentN2Name);
+				console.log("is parent found in list: ", removeSpanIf.indexOf(parentN2Name));
+				
+				if (removeSpanIf.indexOf(parentN2Name) > -1){
 					nodeList[i].outerHTML = nodeList[i].innerHTML;
+				}
 				break;
 			case "BR":
-				let parentN2 = nodeList[i].parentNode,
+				console.log("is a br");
+				console.log("parentN: : ", parentN);
+				let parentN3 = nodeList[i].parentNode;
+				console.log("parentN3: : ", parentN3);
+				let parentN3Name = parentN3.nodeName,
 					reformatBrIf = ["P"];
-				if (reformatBrIf.includes(parentN2.nodeName)){
+				console.log("parentN3.nodeName : ", parentN3Name);
+	
+				console.log("is parent found in list: ", reformatBrIf.indexOf(parentN3Name));
+				if (reformatBrIf.indexOf(parentN3Name) > -1){
 					let newPTagList = parentN2.innerHTML.split("<br>");
 					newPTagList = newPTagList.map(createNewP);
 					let pTagsConcat = newPTagList.join();
@@ -88,35 +124,71 @@ function switchStatements(nodeList){
 				}
 				break;
 			case "IMG":
+				console.log("is an img");
+				console.log("parentN: : ", parentN);
+				let parentN4 = nodeList[i].parentNode;
+				console.log("parentN4: : ", parentN4);
+				let parentN4Name = parentN4.nodeName;
+				console.log("parentN4.nodeName : ", parentN4Name);
 				handleImageElement(nodeList[i]);
-				// reset 'downloadArray' for new downloadArray items
-				downloadArray = [];
 				break;
 			case "A":
+				console.log("is 'a' tag");
+				console.log("parentN: : ", parentN);
+				let parentN5 = nodeList[i].parentNode;
+				console.log("parentN5: : ", parentN5);
+				let parentN5Name = parentN5.nodeName;
+				console.log("parentN5.nodeName : ", parentN5Name);
 				handleLinkElement(nodeList[i]);
 				break;
 		}
+	
+	}
 
-		//-------------WAS INITIALLY "removeExtraNodes" function-------------//
+	// 	//-------------WAS INITIALLY "removeExtraNodes" function-------------//
 
-		// remove HTML comments
-		nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/<!--.*?-->/g, "");
-		// replace non-breaking spaces with spaces
-		nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/&nbsp;/g, " ");
-		// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
-		let temp = nodeList[i].innerText.match(/[^\s\r\t\n]+/g);
+	// 	// remove HTML comments
+	// 	nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/<!--.*?-->/g, "");
+	// 	// replace non-breaking spaces with spaces
+	// 	nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/&nbsp;/g, " ");
+	// 	// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
+	// 	let temp = nodeList[i].innerText.match(/[^\s\r\t\n]+/g);
 		
-		// if no matches (no 'words') exist
-		if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
-			nodeList[i].remove();
-		}
+	// 	// if no matches (no 'words') exist
+	// 	if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
+	// 		nodeList[i].remove();
+	// 	}
 
-		//-------------------------------------------------------------------//
+	// 	//-------------------------------------------------------------------//
 		// download everything in downloadArray
 		downloadAllItems(0);
-	}
-	
 }
+	
+
+
+/*function recursiveRestructure(el){
+	console.log("what is OG el: ",  el);
+	let newEl = el.cloneNode(true);
+	console.log("newEl: ", newEl);
+	console.log("newEl.CHILDREN: ", newEl.attributes);
+	for (let j = 0; j < newEl.children.length; j++){
+		(newEl.children)[j].remove();
+		console.log("Updated newEl ["+j+"]: ", newEl);
+
+	}
+
+	console.log("NEW newEl: ", newEl);
+
+	let arrayofChildren = el.children;
+	if (arrayofChildren.length > 0){
+		for (let i = 0; i < arrayofChildren.length; i++){
+			// newEl.innerHTML += recursiveRestructure(arrayofChildren[i]).outerHTML;
+			console.log("RR: ", recursiveRestructure(arrayofChildren[i]));
+		}
+	}
+	return newEl;
+}
+*/
 
 // creates '<p>' tag with innerHTML equal to 'string'
 function createNewP(string) {
