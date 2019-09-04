@@ -124,10 +124,13 @@ function switchStatements(nodeList){
 	
 				// console.log("is parent found in list: ", reformatBrIf.indexOf(parentN3Name));
 				if (reformatBrIf.indexOf(parentN3Name) > -1){
-					let newPTagList = parentN2.innerHTML.split("<br>");
+					let newPTagList = parentN3.innerHTML.split("<br>");
 					newPTagList = newPTagList.map(createNewP);
+					
 					let pTagsConcat = newPTagList.join();
-					parentN2.outerHTML = pTagsConcat;
+					console.log('pTagsConcat:' + pTagsConcat);
+					console.log('parentN3Name: ' + parentN3Name);
+					parentN3.outerHTML = pTagsConcat;
 				}
 				break;
 			case "IMG":
@@ -201,7 +204,8 @@ function switchStatements(nodeList){
 function createNewP(string) {
 	let newP = document.createElement("p");
 	newP.innerHTML = string;
-	return newP;
+	// return '<p>' + string + '</p>';
+	return newP.outerHTML;
 }
 
 // checks/handles element to make sure there is only one H1 header
