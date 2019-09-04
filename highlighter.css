@@ -162,7 +162,7 @@ body .cb-btn {
   transform: rotate(-45deg);
 }
 
-[previewBox] span {
+[previewBox] span[previewClose] {
   position: absolute;
   height: 40px;
   width: 40px;

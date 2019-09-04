@@ -124,13 +124,19 @@ function switchStatements(nodeList){
 	
 				// console.log("is parent found in list: ", reformatBrIf.indexOf(parentN3Name));
 				if (reformatBrIf.indexOf(parentN3Name) > -1){
+					let outer = parentN3.outerHTML;
 					let newPTagList = parentN3.innerHTML.split("<br>");
+					console.log("newPTagList: ", newPTagList);
+
 					newPTagList = newPTagList.map(createNewP);
+					console.log("newPTagList(mapped): ", newPTagList);
 					
+
 					let pTagsConcat = newPTagList.join();
 					console.log('pTagsConcat:' + pTagsConcat);
-					console.log('parentN3Name: ' + parentN3Name);
-					parentN3.outerHTML = pTagsConcat;
+					console.log('parentN3: ' + parentN3);
+					console.log('parentN3.outer: ' + parentN3.outerHTML);
+					// parentN3.outerHTML = pTagsConcat;
 				}
 				break;
 			case "IMG":
