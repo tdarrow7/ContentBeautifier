@@ -14,12 +14,15 @@ function reformatEverythingEverywhere(element) {
 
 	let allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
-	for (let i = 0; i < allElms.length; i++){
+
+	// used to check if the nodeList has element with parentNodes
+	/*for (let i = 0; i < allElms.length; i++){
         // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
         console.log("Beginning of Function, All Elms "+ i + ": ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
-	}
-	console.log("Before anything gets modified (nodeElms NodeList): ", nodeElms);
-	console.log("Before anything gets modified (allElms Array): ", allElms);
+	}*/
+
+	// console.log("Before anything gets modified (nodeElms NodeList): ", nodeElms);
+	// console.log("Before anything gets modified (allElms Array): ", allElms);
 	
 	VerifySingleH1(h1Tags);
 	let bTags = Array.prototype.slice.call(element.querySelectorAll('b'));
@@ -44,21 +47,23 @@ function reformatEverythingEverywhere(element) {
 	// check phone number formatting in text
 	restructureTele(allElms);
 
-	for (let i = 0; i < allElms.length; i++){
+	// used to check if the nodeList has element with parentNodes
+	/*for (let i = 0; i < allElms.length; i++){
         // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
         console.log("After Restructure Tele All Elms "+ i + ": ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
-	}
+	}*/
 
 	// recall all elements after checking for phone numbers
 	nodeElms = element.querySelectorAll('*');
-	console.log("AllElms: ", nodeElms);
+	// console.log("AllElms: ", nodeElms);
 	allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
 
-	for (let i = 0; i < allElms.length; i++){
+	// used to check if the nodeList has element with parentNodes
+	/*for (let i = 0; i < allElms.length; i++){
         // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
         console.log("Before SwitchStatement All Elms "+ i + ": ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
-	}
+	}*/
 	
 	switchStatements(allElms);
 }
@@ -74,10 +79,12 @@ function swapElTypes(listofElms, nameOfElm) {
 
 function switchStatements(nodeList){
 	console.log("switchStatements nodeList: ", nodeList);
-	for (let i = 0; i < nodeList.length; i++){
-        // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
-        console.log("Within switchStatements function before cases nodeList "+ i + ": ", nodeList[i], "    What's the parentNode?: ", nodeList[i].parentNode);
-	}
+
+	// used to check if the nodeList has element with parentNodes
+	// for (let i = 0; i < nodeList.length; i++){
+    //     // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
+    //     console.log("Within switchStatements function before cases nodeList "+ i + ": ", nodeList[i], "    What's the parentNode?: ", nodeList[i].parentNode);
+	// }
 	
 	// console.log("newRestructured element: ", nodeList[0]);
 	// console.log("newRestructured element: ", recursiveRestructure(nodeList[0]));
@@ -93,29 +100,29 @@ function switchStatements(nodeList){
 		switch(nodeType)
 		{
 			case "SPAN": 
-				console.log("is a span");
-				console.log("parentN: : ", parentN);
+				// console.log("is a span");
+				// console.log("parentN: : ", parentN);
 				let parentN2 = nodeList[i].parentNode;
-				console.log("parentN2: : ", parentN2);
+				// console.log("parentN2: : ", parentN2);
 				let parentN2Name = parentN2.nodeName,
 					removeSpanIf = ["UL", "OL", "LI", "P"];
-				console.log("parentN2.nodeName : ", parentN2Name);
-				console.log("is parent found in list: ", removeSpanIf.indexOf(parentN2Name));
+				// console.log("parentN2.nodeName : ", parentN2Name);
+				// console.log("is parent found in list: ", removeSpanIf.indexOf(parentN2Name));
 				
 				if (removeSpanIf.indexOf(parentN2Name) > -1){
 					nodeList[i].outerHTML = nodeList[i].innerHTML;
 				}
 				break;
 			case "BR":
-				console.log("is a br");
-				console.log("parentN: : ", parentN);
+				// console.log("is a br");
+				// console.log("parentN: : ", parentN);
 				let parentN3 = nodeList[i].parentNode;
-				console.log("parentN3: : ", parentN3);
+				// console.log("parentN3: : ", parentN3);
 				let parentN3Name = parentN3.nodeName,
 					reformatBrIf = ["P"];
-				console.log("parentN3.nodeName : ", parentN3Name);
+				// console.log("parentN3.nodeName : ", parentN3Name);
 	
-				console.log("is parent found in list: ", reformatBrIf.indexOf(parentN3Name));
+				// console.log("is parent found in list: ", reformatBrIf.indexOf(parentN3Name));
 				if (reformatBrIf.indexOf(parentN3Name) > -1){
 					let newPTagList = parentN2.innerHTML.split("<br>");
 					newPTagList = newPTagList.map(createNewP);
@@ -124,21 +131,21 @@ function switchStatements(nodeList){
 				}
 				break;
 			case "IMG":
-				console.log("is an img");
-				console.log("parentN: : ", parentN);
+				// console.log("is an img");
+				// console.log("parentN: : ", parentN);
 				let parentN4 = nodeList[i].parentNode;
-				console.log("parentN4: : ", parentN4);
+				// console.log("parentN4: : ", parentN4);
 				let parentN4Name = parentN4.nodeName;
-				console.log("parentN4.nodeName : ", parentN4Name);
+				// console.log("parentN4.nodeName : ", parentN4Name);
 				handleImageElement(nodeList[i]);
 				break;
 			case "A":
-				console.log("is 'a' tag");
-				console.log("parentN: : ", parentN);
+				// console.log("is 'a' tag");
+				// console.log("parentN: : ", parentN);
 				let parentN5 = nodeList[i].parentNode;
-				console.log("parentN5: : ", parentN5);
+				// console.log("parentN5: : ", parentN5);
 				let parentN5Name = parentN5.nodeName;
-				console.log("parentN5.nodeName : ", parentN5Name);
+				// console.log("parentN5.nodeName : ", parentN5Name);
 				handleLinkElement(nodeList[i]);
 				break;
 		}

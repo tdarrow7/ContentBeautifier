@@ -138,16 +138,17 @@ window.addEventListener("click", () => {
   if (event.target.classList.contains('copy')) {
     if (div.childNodes.length == 1){
       let og = document.querySelectorAll('body [data-cbcopy="true"] *');
-      console.log("original tree node: ", document.querySelector('body [data-cbcopy="true"]'));
+      //console.log("original tree node: ", document.querySelector('body [data-cbcopy="true"]'));
       let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
       console.log("temp: ", temp);
 
       let allElms = Array.prototype.slice.call(temp.querySelectorAll("*"));
 
-      for (let i = 0; i < allElms.length; i++){
+      // used to check if the nodeList has element with parentNodes
+      /*for (let i = 0; i < allElms.length; i++){
         // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
         console.log("AllElms Node[i]: ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
-      }
+      }*/
 
       console.log("temp tree node:", temp);
       // reformatEverythingEverywhere(temp);
