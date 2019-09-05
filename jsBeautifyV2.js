@@ -113,7 +113,7 @@ function switchStatements(nodeList, element){
 					nodeList[i].outerHTML = nodeList[i].innerHTML;
 				}
 				break;
-			case "BR":
+			case "P":
 				// console.log("is a br");
 				// console.log("parentN: : ", parentN);
 				let parentN3 = nodeList[i].parentNode;
@@ -139,8 +139,8 @@ function switchStatements(nodeList, element){
 					console.log('pTagsConcat type : ' + typeof(pTagsConcat));
 					console.log('parentNs parent : ' + parentN3.parentNode);
 					
-					console.log('parentN3.outer: ' + parentN3.outerHTML);
-					parentN3.outerHTML = pTagsConcat;
+					console.log('parentN3.outer: ' + parentN3);
+					parentN3.innerHTML = pTagsConcat;
 					console.log('newest parentN3.outerHTML: ', parentN3.outerHTML);
 				}
 				break;
@@ -216,7 +216,8 @@ function switchStatements(nodeList, element){
 // creates '<p>' tag with innerHTML equal to 'string'
 function createNewP(string) {
 	let newP = document.createElement("p");
-	newP.innerHTML = string;
+	newP.innerHTML = string.replace(/\u21B5/g, "");
+	console.log("newP.innerHTML: ", newP.innerHTML);
 	// return '<p>' + string + '</p>';
 	return newP.outerHTML;
 }

@@ -15,8 +15,8 @@ setMultipleAttributes(divContainer, {"previewContainer" : "", class: "previewCon
 setMultipleAttributes(span, {"previewClose" : "", class: "previewClose"});
 setMultipleAttributes(a, {"previewClose" : "", class: "previewClose"});
 span.append(a);
-div.append(span);
 divContainer.append(div);
+divContainer.append(span);
 
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
@@ -55,7 +55,6 @@ function findNodeTree(event) {
 function clearNodeTree() {
   nav.innerHTML = "";
   div.innerHTML = "";
-  div.append(span);
   for (let i = 0; i < tree.length; i++) {
     tree[i].removeAttribute("data-cbnode");
     tree[i].removeAttribute("style");
@@ -136,7 +135,7 @@ window.addEventListener("click", () => {
     moveCopyAttribute(event.target);
   }
   if (event.target.classList.contains('copy')) {
-    if (div.childNodes.length == 1){
+    if (div.childNodes.length == 0){
       let og = document.querySelectorAll('body [data-cbcopy="true"] *');
       //console.log("original tree node: ", document.querySelector('body [data-cbcopy="true"]'));
       let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);

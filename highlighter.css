@@ -137,7 +137,6 @@ body .cb-btn {
 .previewClicked [previewContainer] {
   z-index: 14999;
   opacity: 1;
-  cursor: pointer;
 }
 
 [previewClose] a:after {
@@ -162,18 +161,21 @@ body .cb-btn {
   transform: rotate(-45deg);
 }
 
-[previewBox] span[previewClose] {
-  position: absolute;
+[previewBox] > span[previewClose] {
   height: 40px;
   width: 40px;
   padding: 0 0;
-  right: 5px;
-  top: 10px;
+  position: relative;
+  left: 100%;
+  display: block;
+  top: -50px;
   cursor: pointer;
 }
 
-div.previewBox:nth-child(2) {
-  margin: 50px 0 0 0;
+div.previewBox {
+  overflow-y: scroll;
+  max-height: 59em;
+  border-radius: .5em;
 }
 
 [data-nav] > a:hover,
