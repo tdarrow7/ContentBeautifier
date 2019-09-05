@@ -116,33 +116,63 @@ function switchStatements(nodeList, element){
 			case "P":
 				// console.log("is a br");
 				// console.log("parentN: : ", parentN);
-				let parentN3 = nodeList[i].parentNode;
+				let pNode = nodeList[i];
 				// console.log("parentN3: : ", parentN3);
-				let parentN3Name = parentN3.nodeName,
-					reformatBrIf = ["P"];
 				// console.log("parentN3.nodeName : ", parentN3Name);
 	
-				// console.log("is parent found in list: ", reformatBrIf.indexOf(parentN3Name));
-				if (reformatBrIf.indexOf(parentN3Name) > -1){
-					let outer = parentN3.outerHTML;
-					let newPTagList = parentN3.innerHTML.split("<br>");
-					console.log("newPTagList: ", newPTagList);
+				console.log("List: ", pNode.children);
+				for (let x = 0; x < pNode.children.length; x++){
+					console.log("x: ", pNode.children[x]);
+					console.log("x.nodeName: ", pNode.children[x].nodeName);
+					if (pNode.children[x].nodeName == "BR"){
+						console.log("BR BRO");
+						let newPTagList = pNode.innerHTML.split("<br>");
+						console.log("newPTagList: ", newPTagList);
 
-					newPTagList = newPTagList.map(createNewP);
-					console.log("newPTagList(mapped): ", newPTagList);
-					
+						newPTagList = newPTagList.map(createNewP);
+						console.log("newPTagList(mapped): ", newPTagList);
+						
+						let nodesFragment = document.createDocumentFragment();
+						for (let tag of newPTagList){
+							nodesFragment.appendChild(tag);
+						}
 
-					let pTagsConcat = newPTagList.join("");
-					console.log('pTagsConcat:' + pTagsConcat);
-					console.log('parentN3: ' + parentN3);
-					console.log('parentN3 outerHTML type: ' + typeof(parentN3.outerHTML));
-					console.log('pTagsConcat type : ' + typeof(pTagsConcat));
-					console.log('parentNs parent : ' + parentN3.parentNode);
+						let parentN3 = pNode.parentNode; 
+						console.log("Before: ", parentN3.outerHTML);
+						parentN3.replaceChild(nodesFragment, pNode);
+						console.log("After: ", parentN3.outerHTML);
+						break;
+					}
+				// if (pNode.children.indexOf(reformatBrIf) > -1){
+				// 	console.log("is parent found in list: ", pNode.children.indexOf(reformatBrIf));
+				// 	let outer = pNode.outerHTML;
+					// let newPTagList = pNode.innerHTML.split("<br>");
+					// console.log("newPTagList: ", newPTagList);
+
+					// newPTagList = newPTagList.map(createNewP);
+					// console.log("newPTagList(mapped): ", newPTagList);
 					
-					console.log('parentN3.outer: ' + parentN3);
-					parentN3.innerHTML = pTagsConcat;
-					console.log('newest parentN3.outerHTML: ', parentN3.outerHTML);
-				}
+					// let nodesFragment = document.createDocumentFragment();
+					// for (let tag of newPTagList){
+					// 	nodesFragment.appendChild(tag);
+					// }
+
+					// let parentN3 = parentN3.parentNode; 
+					// console.log("Before: ", parentN3.outerHTML);
+					// parentN3.replaceChild(nodesFragment, parentN3);
+					// console.log("After: ", parentN3.outerHTML);
+
+					// let pTagsConcat = newPTagList.join("");
+					// console.log('pTagsConcat:' + pTagsConcat);
+					// console.log('parentN3: ' + parentN3);
+					// console.log('parentN3 outerHTML type: ' + typeof(parentN3.outerHTML));
+					// console.log('pTagsConcat type : ' + typeof(pTagsConcat));
+					// console.log('parentNs parent : ' + parentN3.parentNode);
+					
+					// console.log('parentN3.outer: ' + parentN3);
+					// parentN3.innerHTML = pTagsConcat;
+					// console.log('newest parentN3.outerHTML: ', parentN3.outerHTML);
+				}	
 				break;
 			case "IMG":
 				// console.log("is an img");
@@ -219,7 +249,7 @@ function createNewP(string) {
 	newP.innerHTML = string.replace(/\u21B5/g, "");
 	console.log("newP.innerHTML: ", newP.innerHTML);
 	// return '<p>' + string + '</p>';
-	return newP.outerHTML;
+	return newP;
 }
 
 // checks/handles element to make sure there is only one H1 header
