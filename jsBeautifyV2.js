@@ -55,9 +55,9 @@ function reformatEverythingEverywhere(element) {
 
 	// recall all elements after checking for phone numbers
 	nodeElms = element.querySelectorAll('*');
-	// console.log("AllElms: ", nodeElms);
-	allElms = Array.prototype.slice.call(nodeElms);
-	allElms.push(element);
+	// // console.log("AllElms: ", nodeElms);
+	// allElms = Array.prototype.slice.call(nodeElms);
+	allElms.push(nodeElms, element);
 
 	// used to check if the nodeList has element with parentNodes
 	/*for (let i = 0; i < allElms.length; i++){
@@ -65,7 +65,7 @@ function reformatEverythingEverywhere(element) {
         console.log("Before SwitchStatement All Elms "+ i + ": ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
 	}*/
 	
-	switchStatements(allElms);
+	switchStatements(allElms, element);
 }
 
 // general function to swap legacy/incorrect elements with appropriate element equivalent
@@ -77,7 +77,7 @@ function swapElTypes(listofElms, nameOfElm) {
 	}
 }
 
-function switchStatements(nodeList){
+function switchStatements(nodeList, element){
 	console.log("switchStatements nodeList: ", nodeList);
 
 	// used to check if the nodeList has element with parentNodes
@@ -132,11 +132,16 @@ function switchStatements(nodeList){
 					console.log("newPTagList(mapped): ", newPTagList);
 					
 
-					let pTagsConcat = newPTagList.join();
+					let pTagsConcat = newPTagList.join("");
 					console.log('pTagsConcat:' + pTagsConcat);
 					console.log('parentN3: ' + parentN3);
+					console.log('parentN3 outerHTML type: ' + typeof(parentN3.outerHTML));
+					console.log('pTagsConcat type : ' + typeof(pTagsConcat));
+					console.log('parentNs parent : ' + parentN3.parentNode);
+					
 					console.log('parentN3.outer: ' + parentN3.outerHTML);
-					// parentN3.outerHTML = pTagsConcat;
+					parentN3.outerHTML = pTagsConcat;
+					console.log('newest parentN3.outerHTML: ', parentN3.outerHTML);
 				}
 				break;
 			case "IMG":
@@ -158,6 +163,8 @@ function switchStatements(nodeList){
 				handleLinkElement(nodeList[i]);
 				break;
 		}
+
+		nodeList = element.querySelectorAll("*");
 	
 	}
 
