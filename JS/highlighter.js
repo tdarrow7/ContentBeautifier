@@ -14,7 +14,7 @@ function changeHighlightPosition(arr) {
     top +
     "px";
 
-  setAttributes(highlight, {
+  setMultipleAttributes(highlight, {
     class: "highlighter",
     style: styleString,
     "data-cbspecial": ""

@@ -1,0 +1,149 @@
+/* Highlighter Styles */
+
+.highlighter {
+    display: block !important;
+    position: absolute !important;
+    z-index: 9997 !important;
+    visibility: hidden !important;
+    opacity: 0;
+    pointer-events: none !important;
+    box-sizing: content-box !important;
+    border: solid 2px rgba(4, 134, 255, 1);
+    background: rgba(4, 134, 255, 0.2);
+    padding: 0;
+    border-radius: 4px;
+    margin: auto;
+    transform: none;
+    box-shadow: inset 0px 0px 0px 1px rgba(255, 255, 255, 1),
+      3px 3px 8px rgba(0, 0, 0, 0.2);
+    transition: 0.15s !important;
+  }
+  
+  .highlighter.hover {
+    background-color: transparent;
+    box-shadow: inset 0px 0px 0px 1px rgba(255, 255, 255, 1),
+      3px 3px 8px rgb(82, 169, 0.2);
+    border: solid 2px rgb(82, 169, 0);
+  }
+  
+  [data-nav] {
+    position: fixed;
+    left: 0px;
+    top: 0;
+    z-index: 10000;
+    height: 100%;
+    /* background-color: rgba(255, 255, 255, 0.8); */
+    line-height: 1.4;
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 3em 1em;
+    width: 7em;
+    font-size: 18px;
+    transition: background-color 0.4s ease 0s, width 0.6s ease 0s;
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+  
+  [data-nav]:hover {
+    width: 20em;
+  }
+  
+  [data-nav] .nav-div > a {
+    color: gray;
+    transition: color 0.4s ease 0s, transform 0.6s ease 0s;
+    display: block;
+  }
+  
+  [data-nav] .nav-div > a.active,
+  [data-nav] .nav-div > a.active ~ a {
+    color: rgba(4, 134, 255, 1);
+  }
+  
+  [data-nav] .nav-div:hover  > a {
+    transform: none !important;
+  }
+  
+  [data-nav] .nav-div > a:hover,
+  [data-nav] .nav-div > a.active:hover,
+  [data-nav] .nav-div > a.active ~ a:hover {
+      color: #ffffff;
+  }
+  
+  [previewBox]{
+      z-index: -999;
+      padding: 10px;
+      background: white;
+      position: fixed;
+      left: 370px;
+      top: 200px;
+      max-width: 65%;
+      min-width: 30%;
+      opacity: 0;
+      transition: opacity .4s ease 0s;
+  }
+  
+  [previewContainer]{
+    z-index: -1000;
+    background-color: rgba(0, 0, 0, .6);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity .4s ease 0s;
+  
+  }
+  
+  .previewClicked [previewBox] {
+    z-index: 15000;
+    opacity: 1;
+  }
+  
+  .previewClicked [previewContainer] {
+    z-index: 14999;
+    opacity: 1;
+  }
+  
+  [previewClose] a:after {
+    width: 30px;
+    height: 4px;
+    background-color: black;
+    content: '';
+    position: absolute;
+    right: 5px;
+    top: 20px;
+    transform: rotate(45deg);
+  }
+  
+  [previewClose] a:before {
+    width: 30px;
+    height: 4px;
+    background-color: black;
+    content: '';
+    position: absolute;
+    right: 5px;
+    top: 20px;
+    transform: rotate(-45deg);
+  }
+  
+  [previewBox] > span[previewClose] {
+    height: 40px;
+    width: 40px;
+    padding: 0 0;
+    position: relative;
+    left: 100%;
+    display: block;
+    top: -50px;
+    cursor: pointer;
+  }
+  
+  div.previewBox {
+    overflow-y: scroll;
+    max-height: 59em;
+    border-radius: .5em;
+  }
+  
+  [data-nav] .separator {
+    font-weight: 700;
+    color: grey;
+    margin: 0 0.5em;
+  }
+  
+  /* End Highlighter Styles */
