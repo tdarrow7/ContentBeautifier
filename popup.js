@@ -97,37 +97,46 @@ function moveCopyAttribute(el) {
   changePosition(newNode);
 }
 
+
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
-  event.preventDefault();
-
-  // this is for testing
-  if (ctrlIsPressed) {
-    console.log('success!');
+  if (ctrlIsPressed){
+    event.preventDefault(); 
   }
-
   if (
     !event.target.parentNode.hasAttribute("data-nav") &&
     !event.target.hasAttribute("data-nav") &&
-    !event.target.parentNode.hasAttribute("nav-div")
+    !event.target.parentNode.hasAttribute("nav-div") &&
+    !event.target.hasAttribute("data-cbspecial")
   )
-    findNodeTree(event);
-  else if (event.target.hasAttribute("data-findnode"))
+    if (ctrlIsPressed){
+      findNodeTree(event);
+    }
+  if (event.target.hasAttribute("data-findnode")){
     moveCopyAttribute(event.target);
+  }
+  if (event.target.classList.contains('copy')) {
+      reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));
+  }
+  // console.log("event.target.classList: ",  event.target.classList);
+  // console.log("event.target.classList.contains('copy'): ",  event.target.classList.contains('copy'));
 });
 
-// document.onkeydown = function(e) {
-//   e = e || window.event;
-//   if (e.keyCode == 17) {
-//     ctrlIsPressed = true;
-//     console.log('ctrl is pressed');
-//   }
-// }
+document.onkeydown = function(e) {
+  e = e || window.event;
+  // console.log(e.code);
+  let code = e.code.toString();
+  if (code == 'ControlLeft' || code == 'ControlRight') {
+    ctrlIsPressed = true;
+    console.log('ctrl is pressed');
+  }
+}
 
-// document.onkeyup = function(e) {
-//   e = e || window.event;
-//   if (e.keyCode == 17) {
-//     ctrlIsPressed = false;
-//     console.log('ctrl is depressed');
-//   }
-// }
+document.onkeyup = function(e) {
+  e = e || window.event;
+  let code = e.code.toString();
+  if (code == 'ControlLeft' || code == 'ControlRight') {
+    ctrlIsPressed = false;
+    console.log('ctrl is depressed');
+  }
+}
