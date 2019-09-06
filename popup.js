@@ -3,9 +3,11 @@ let el = null,
   parentEl = null,
   tree = [],
   nav = document.createElement("nav"),
+  navDiv = document.createElement("div"),
   html = document.querySelector("html"),
   ctrlIsPressed = false;
 setMultipleAttributes(nav, { "data-nav": "", class: "data-nav" });
+setMultipleAttributes(navDiv, { "nav-div": "", class: "nav-div" });
 
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
@@ -13,6 +15,8 @@ function findNodeTree(event) {
   if (tree.length > 0) clearNodeTree();
   else {
     html.prepend(nav);
+    nav.append(navDiv);
+    addNavButton();
   }
 
   window.getComputedStyle(html);
@@ -28,7 +32,7 @@ function findNodeTree(event) {
   });
   tree.push(el);
   console.log(el.getBoundingClientRect());
-  getID();
+  changePosition(el);
   while (parentEl && parentEl.nodeName != "#document") {
     setMultipleAttributes(parentEl, { "data-cbnode": tree.length });
     tree.push(parentEl);
@@ -41,7 +45,7 @@ function findNodeTree(event) {
 
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
-  nav.innerHTML = "";
+  navDiv.innerHTML = "";
   for (let i = 0; i < tree.length; i++) {
     tree[i].removeAttribute("data-cbnode");
     tree[i].removeAttribute("style");
@@ -66,7 +70,7 @@ function createRepresentationOfTree() {
     });
     link.innerText = "<" + tree[i].nodeName.toString().toLowerCase() + ">";
     if (i == 0) link.classList.add("active");
-    nav.append(link);
+    navDiv.append(link);
     indent += 0.2;
   }
 }
@@ -90,7 +94,7 @@ function moveCopyAttribute(el) {
   removecopy.classList.remove("active");
   let newNode = document.querySelector('[data-cbnode="' + cnodeval + '"]');
   newNode.setAttribute("data-cbcopy", "true");
-  getID();
+  changePosition(newNode);
 }
 
 // listen for click events in the window. On click, call findNodeTree function
@@ -104,7 +108,8 @@ window.addEventListener("click", () => {
 
   if (
     !event.target.parentNode.hasAttribute("data-nav") &&
-    !event.target.hasAttribute("data-nav")
+    !event.target.hasAttribute("data-nav") &&
+    !event.target.parentNode.hasAttribute("nav-div")
   )
     findNodeTree(event);
   else if (event.target.hasAttribute("data-findnode"))
