@@ -5,13 +5,13 @@ function changeHighlightPosition(arr) {
   let { height, width, left, top } = arr;
   var styleString =
     "visibility: visible !important; opacity: 1 !important; height: " +
-    height +
+    (height + 4) +
     "px; width: " +
-    width +
+    (width + 4) +
     "px; left: " +
-    left +
+    (left - 2) +
     "px; top: " +
-    top +
+    (top - 2) +
     "px";
 
   setMultipleAttributes(highlight, {
