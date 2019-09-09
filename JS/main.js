@@ -176,45 +176,25 @@ window.addEventListener("click", () => {
         event.preventDefault();
     }
     if (
-        !event.target.parentNode.hasAttribute("data-nav") &&
-        !event.target.hasAttribute("data-nav") &&
-        !event.target.parentNode.hasAttribute("nav-div") &&
-        !event.target.hasAttribute("data-cbspecial")
+        !event.target.parentNode.hasAttribute("data-nav")
+        && !event.target.hasAttribute("data-nav")
+        && !event.target.parentNode.hasAttribute("nav-div")
+        && !event.target.hasAttribute("data-cbspecial")
     )
-        if (ctrlIsPressed) {
+        if (ctrlIsPressed)
             findNodeTree(event);
-        }
-    if (event.target.hasAttribute("data-findnode")) {
+    if (event.target.hasAttribute("data-findnode"))
         moveCopyAttribute(event.target);
-    }
     if (event.target.classList.contains('preview')) {
         if (preview.childNodes.length == 0) {
-            let og = document.querySelectorAll('body [data-cbcopy="true"] *');
-            //console.log("original tree node: ", document.querySelector('body [data-cbcopy="true"]'));
             let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
-            console.log("temp: ", temp);
-
-            let allElms = Array.prototype.slice.call(temp.querySelectorAll("*"));
-
-            // used to check if the nodeList has element with parentNodes
-            /*for (let i = 0; i < allElms.length; i++){
-              // console.log("OG Node[i]: ", og[i], "    What's the parentNode?: ", og[i].parentNode);
-              console.log("AllElms Node[i]: ", allElms[i], "    What's the parentNode?: ", allElms[i].parentNode);
-            }*/
-
-            console.log("temp tree node:", temp);
-            // reformatEverythingEverywhere(temp);
-
-
             preview.appendChild(temp);
-
             reformatEverythingEverywhere(temp);
         }
-        html.classList.toggle("previewClicked");
-        // reformatEverythingEverywhere(document.querySelector('body [data-cbcopy="true"]'));
+        html.classList.add("previewClicked");
     }
     if (event.target.classList.contains('previewContainer') || event.target.classList.contains('previewClose')) {
-        html.classList.toggle("previewClicked");
+        html.classList.remove("previewClicked");
     }
     // console.log("event.target.classList: ",  event.target.classList);
     // console.log("event.target.classList.contains('copy'): ",  event.target.classList.contains('copy'));
@@ -224,27 +204,17 @@ document.onkeydown = function (e) {
     e = e || window.event;
     // console.log(e.code);
     let code = e.code.toString();
-    if (code == 'ControlLeft' || code == 'ControlRight') {
+    if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = true;
-        console.log('ctrl is pressed');
-    }
-    if (e.keyCode == 27) {
-        esclIsPressed = true;
-        console.log('esc is pressed');
-    }
+    if (e.keyCode == 27)
+        html.classList.remove("previewClicked");
 }
 
 document.onkeyup = function (e) {
     e = e || window.event;
     let code = e.code.toString();
-    if (code == 'ControlLeft' || code == 'ControlRight') {
+    if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = false;
-        console.log('ctrl is depressed');
-    }
-    if (e.keyCode == 27) {
-        escIsPressed = false;
-        console.log('esc is depressed');
-    }
 }
 
 function changePageButtonPosition(arr) {
