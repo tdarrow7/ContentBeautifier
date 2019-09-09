@@ -193,6 +193,21 @@ window.addEventListener("click", () => {
         }
         html.classList.add("previewClicked");
     }
+    if (event.target.classList.contains('copy')) {
+        if (preview.childNodes.length == 0){
+            let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
+            preview.appendChild(temp);
+            reformatEverythingEverywhere(temp);
+
+
+            // Insert Copy Function Here
+            // console.log("TEMP: ", temp);
+            copyFunction();
+        }
+        else{
+            copyFunction();
+        }
+    }
     if (event.target.classList.contains('previewContainer') || event.target.classList.contains('previewClose')) {
         html.classList.remove("previewClicked");
     }
@@ -208,6 +223,10 @@ document.onkeydown = function (e) {
         ctrlIsPressed = true;
     if (e.keyCode == 27)
         html.classList.remove("previewClicked");
+    if (ctrlIsPressed && (e.keyCode == 67)){
+        // console.log("Ctrl+C");
+        copyFunction();
+    }
 }
 
 document.onkeyup = function (e) {
@@ -215,6 +234,41 @@ document.onkeyup = function (e) {
     let code = e.code.toString();
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = false;
+}
+
+function copyFunction(){
+
+    // checks to see if extension is enabled
+    let nodeCheck = document.querySelector('body [data-cbcopy="true"]');
+    if (nodeCheck){
+        // if previewBox is empty, populate it
+        if (preview.childNodes.length == 0){
+            
+            let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
+            preview.appendChild(temp);
+            reformatEverythingEverywhere(temp);
+        }
+
+        // copy contents to clipboard
+        if (document.body.createTextRange){
+            range = document.body.createTextRange();
+            range.moveToElementText(preview.firstChild);
+            range.select();
+            document.execCommand('copy');
+        }
+        else if (window.getSelection){
+            selection = window.getSelection();
+            range = document.createRange();
+            range.selectNodeContents(preview.firstChild);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+        }
+        else {
+        alert('Copy Unsuccessful');
+        }
+    }
+
 }
 
 function changePageButtonPosition(arr) {
