@@ -9,7 +9,7 @@
     pointer-events: none !important;
     box-sizing: content-box !important;
     border: solid 2px rgba(4, 134, 255, 1);
-    background: rgba(4, 134, 255, 0.2);
+    background-color: rgba(4, 134, 255, 0.2);
     padding: 0;
     border-radius: 4px;
     margin: auto;
@@ -32,7 +32,6 @@
     top: 0;
     z-index: 10000;
     height: 100%;
-    /* background-color: rgba(255, 255, 255, 0.8); */
     line-height: 1.4;
     background-color: rgba(0, 0, 0, 0.9);
     padding: 3em 1em;
@@ -47,7 +46,7 @@
   }
   
   [data-nav] .nav-div > a {
-    color: gray;
+    color: #808080;
     transition: color 0.4s ease 0s, transform 0.6s ease 0s;
     display: block;
   }
@@ -67,83 +66,92 @@
       color: #ffffff;
   }
   
-  [previewBox]{
-      z-index: -999;
-      padding: 10px;
-      background: white;
-      position: fixed;
-      left: 370px;
-      top: 200px;
-      max-width: 65%;
-      min-width: 30%;
-      opacity: 0;
-      transition: opacity .4s ease 0s;
+  [data-nav] .separator {
+    font-weight: 700;
+    color: #808080;
+    margin: 0 0.5em;
+  }
+
+  div.previewBox {
+    overflow-y: scroll;
+    border: 10px solid #FFFFFF;
+    border-radius: 9px;
+    background-color: #FFFFFF;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
   }
   
-  [previewContainer]{
+  div.previewContainer {
     z-index: -1000;
-    background-color: rgba(0, 0, 0, .6);
+    background-color: #FFFFFF;
     position: fixed;
-    width: 100%;
-    height: 100%;
+    left: 18vw;
+    top: 200px;
+    width: 1020px;
+    max-width: 65vw;
     opacity: 0;
     transition: opacity .4s ease 0s;
-  
+    max-height: 60vh;
+    height: 800px;
   }
   
-  .previewClicked [previewBox] {
+  .previewClicked .previewBox {
+    position: relative;
+    opacity: 1;
+  }
+  
+  .previewClicked .previewContainer {
+    position: fixed;
     z-index: 15000;
     opacity: 1;
   }
   
-  .previewClicked [previewContainer] {
-    z-index: 14999;
-    opacity: 1;
-  }
-  
-  [previewClose] a:after {
-    width: 30px;
-    height: 4px;
-    background-color: black;
-    content: '';
-    position: absolute;
-    right: 5px;
-    top: 20px;
-    transform: rotate(45deg);
-  }
-  
-  [previewClose] a:before {
-    width: 30px;
-    height: 4px;
-    background-color: black;
-    content: '';
-    position: absolute;
-    right: 5px;
-    top: 20px;
-    transform: rotate(-45deg);
-  }
-  
-  [previewBox] > span[previewClose] {
+  .previewContainer > span.previewClose {
     height: 40px;
     width: 40px;
+    top: 0;
+    right: 0;
+    transform: translate(40px, -40px);
+    content: '';
     padding: 0 0;
-    position: relative;
-    left: 100%;
-    display: block;
-    top: -50px;
+    position: absolute;
     cursor: pointer;
+    background-color: transparent;
   }
   
-  div.previewBox {
-    overflow-y: scroll;
-    max-height: 59em;
-    border-radius: .5em;
+  .previewContainer > span.previewClose:after {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 4px;
+    background-color: #FFFFFF;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) rotate(45deg);
   }
   
-  [data-nav] .separator {
-    font-weight: 700;
-    color: grey;
-    margin: 0 0.5em;
+  .previewContainer > span.previewClose:before {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 4px;
+    background-color: #FFFFFF;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) rotate(-45deg);
+  }
+  
+  .previewClicked div.previewContainer:before {
+    position: fixed;
+    content: '';
+    z-index: -1;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    opacity: .6;
+    background-color: black;
   }
   
   /* End Highlighter Styles */
