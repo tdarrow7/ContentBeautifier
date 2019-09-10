@@ -214,16 +214,11 @@ document.onkeydown = function (e) {
     if (e.code.toString() == "Escape")
         html.classList.remove("previewClicked");
     console.log("E.CODE.TOSTRING: ", e.code.toString());
-    if (ctrlIsPressed && e.code.toString() == "KeyT"){
-        console.log("Hey! Ctrl+T event captured!");
-        event.preventDefault();
-        // if (e.code.toString() != "ControlLeft" && e.code.toString() != "ControlRight"){
-        //     ctrlIsPressed = false;
-        // }
+    if (ctrlIsPressed){
         // Ctrl + C
-        // if (e.code.toString() == "KeyC"){
-        //     copyFunction();
-        // }
+        if (e.code.toString() == "KeyC"){
+            copyFunction();
+        }
     }
 }
 
