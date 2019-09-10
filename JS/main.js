@@ -161,7 +161,7 @@ function moveCopyAttribute(el) {
 // when window is inactive/out of focus
 window.addEventListener("blur", () => {
     ctrlIsPressed = false;
-})
+});
 
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
@@ -177,17 +177,16 @@ window.addEventListener("click", () => {
         console.log("toggle off");
     }
 
-    if (ctrlIsPressed) {
-        event.preventDefault();
-    }
     if (
         !event.target.parentNode.hasAttribute("data-nav")
         && !event.target.hasAttribute("data-nav")
         && !event.target.parentNode.hasAttribute("nav-div")
         && !event.target.hasAttribute("data-cbspecial")
     )
-        if (ctrlIsPressed)
-            findNodeTree(event);
+    if (ctrlIsPressed){
+        findNodeTree(event);
+        html.classList.remove("extensionInactive");
+    }
     if (event.target.hasAttribute("data-findnode"))
         moveCopyAttribute(event.target);
     if (event.target.classList.contains('preview')) {
@@ -208,11 +207,16 @@ document.onkeydown = function (e) {
     e = e || window.event;
     // console.log(e.code);
     let code = e.code.toString();
-    if (code == 'ControlLeft' || code == 'ControlRight')
+    if (code == 'ControlLeft' || code == 'ControlRight'){
         ctrlIsPressed = true;
+        
+    }
     // Esc is pressed
-    if (e.code.toString() == "Escape")
+
+    if (e.code.toString() == "Escape"){
         html.classList.remove("previewClicked");
+
+    }
     console.log("E.CODE.TOSTRING: ", e.code.toString());
     if (ctrlIsPressed){
         // Ctrl + C
@@ -222,11 +226,29 @@ document.onkeydown = function (e) {
     }
 }
 
+let lastKeyTime = Date.now();
+let buffer = [];
+
 document.onkeyup = function (e) {
     e = e || window.event;
     let code = e.code.toString();
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = false;
+    if (e.code.toString() == "Escape"){
+        let currentTime = Date.now();
+        if (currentTime - lastKeyTime > 3000) {
+            buffer = [];
+        }
+        buffer.push("Escape");
+        lastKeyTime = currentTime;
+        if (buffer.length == 2){
+            console.log("Esc Pressed Twice");
+            html.classList.add("extensionInactive");
+            document.querySelector("div.highlighter").setAttribute("style", "");
+            document.querySelector("div.btn-container").setAttribute("style", "");
+            buffer = [];
+        }
+    }
 }
 
 function copyFunction(){
