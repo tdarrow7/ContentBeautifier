@@ -153,11 +153,5 @@
     opacity: .6;
     background-color: black;
   }
-
-  .extensionInactive .data-nav, div.highlighter, div.btn-container {
-    z-index: -15000 ;
-    opacity: 0 ;
-    visibility: none ;
-  } 
   
   /* End Highlighter Styles */

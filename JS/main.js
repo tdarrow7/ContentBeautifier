@@ -185,7 +185,6 @@ window.addEventListener("click", () => {
     )
     if (ctrlIsPressed){
         findNodeTree(event);
-        html.classList.remove("extensionInactive");
     }
     if (event.target.hasAttribute("data-findnode"))
         moveCopyAttribute(event.target);
@@ -214,10 +213,19 @@ document.onkeydown = function (e) {
     // Esc is pressed
 
     if (e.code.toString() == "Escape"){
-        html.classList.remove("previewClicked");
+        if (html.classList.contains("previewClicked")){
+            html.classList.remove("previewClicked");
+        }
+        else {
+            document.querySelector("div.highlighter").setAttribute("style", "");
+            document.querySelector("div.btn-container").setAttribute("style", "");
 
+            // reset innerHTML, prevent addition of extra elements on rebuild 
+            document.querySelector("nav.data-nav").innerHTML = "";
+            document.querySelector("nav.data-nav").remove();
+            clearNodeTree();
+        }
     }
-    console.log("E.CODE.TOSTRING: ", e.code.toString());
     if (ctrlIsPressed){
         // Ctrl + C
         if (e.code.toString() == "KeyC"){
@@ -226,29 +234,11 @@ document.onkeydown = function (e) {
     }
 }
 
-let lastKeyTime = Date.now();
-let buffer = [];
-
 document.onkeyup = function (e) {
     e = e || window.event;
     let code = e.code.toString();
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = false;
-    if (e.code.toString() == "Escape"){
-        let currentTime = Date.now();
-        if (currentTime - lastKeyTime > 3000) {
-            buffer = [];
-        }
-        buffer.push("Escape");
-        lastKeyTime = currentTime;
-        if (buffer.length == 2){
-            console.log("Esc Pressed Twice");
-            html.classList.add("extensionInactive");
-            document.querySelector("div.highlighter").setAttribute("style", "");
-            document.querySelector("div.btn-container").setAttribute("style", "");
-            buffer = [];
-        }
-    }
 }
 
 function copyFunction(){
