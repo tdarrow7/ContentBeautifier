@@ -31,8 +31,9 @@ buttonDiv.appendChild(copyButton);
 document.body.appendChild(buttonDiv);
 
 span.append(close);
-divContainer.append(preview);
 divContainer.append(span);
+divContainer.append(preview);
+divContainer.append(copyButton.cloneNode(true));
 
 function changePosition(el) {
     var arr = getPosition(el);
@@ -197,8 +198,6 @@ window.addEventListener("click", () => {
     if (event.target.classList.contains('previewContainer') || event.target.classList.contains('previewClose')) {
         html.classList.remove("previewClicked");
     }
-    // console.log("event.target.classList: ",  event.target.classList);
-    // console.log("event.target.classList.contains('copy'): ",  event.target.classList.contains('copy'));
 });
 
 document.onkeydown = function (e) {

@@ -63,3 +63,8 @@
       background-color: #3D3D3D;
       color: #ffffff;
   }
+
+  .previewContainer .cb-btn:first-child {
+    position: absolute;
+    right: 0;
+  }
