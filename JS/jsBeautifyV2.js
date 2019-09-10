@@ -119,7 +119,7 @@ function switchStatements(nodeList, element){
 
 	// 	//-------------------------------------------------------------------//
 		// download everything in downloadArray
-		downloadAllItems(0);
+		//downloadAllItems(0);
 }
 
 // creates '<p>' tag with innerHTML equal to 'string'
@@ -223,4 +223,9 @@ function downloadElement(el) {
 		fileName = fullPath.replace(/^.*[\\\/]/, ''),
 		fileParts = fileName.split('.');
 	download(fileParts[0], fileName, el[1]);
+}
+
+function resetDownloadErrorArrays() {
+	downloadArray = [];
+	errorArray = [];
 }

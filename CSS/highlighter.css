@@ -56,7 +56,7 @@
     color: rgba(4, 134, 255, 1);
   }
   
-  [data-nav] .nav-div:hover  > a {
+  [data-nav]:hover .nav-div  > a {
     transform: none !important;
   }
   

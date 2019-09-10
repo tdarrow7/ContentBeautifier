@@ -182,10 +182,14 @@ window.addEventListener("click", () => {
         && !event.target.parentNode.hasAttribute("nav-div")
         && !event.target.hasAttribute("data-cbspecial")
     )
-        if (ctrlIsPressed)
+        if (ctrlIsPressed) {
             findNodeTree(event);
-    if (event.target.hasAttribute("data-findnode"))
+            resetDownloadErrorArrays();
+        }
+    if (event.target.hasAttribute("data-findnode")) {
         moveCopyAttribute(event.target);
+        resetDownloadErrorArrays();
+    }
     if (event.target.classList.contains('preview')) {
         clearPreview();
         fillPreview();
@@ -245,6 +249,7 @@ function copyFunction(){
             selection.removeAllRanges();
             selection.addRange(range);
             document.execCommand('copy');
+            downloadAllItems(0);
         }
         else {
         alert('Copy Unsuccessful');
@@ -260,6 +265,7 @@ function clearPreview(){
 function fillPreview(){
     let temp = document.querySelector('[data-cbcopy="true"]').cloneNode(true);
     preview.appendChild(temp);
+    resetDownloadErrorArrays();
     reformatEverythingEverywhere(temp);
 }
 
