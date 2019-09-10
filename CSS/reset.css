@@ -1,0 +1,19 @@
+h1, h2, h3, h4, h5, h6 {
+    font-size: initial !important;
+    font-weight: initial !important;
+    font-style: initial !important;
+    line-height: initial !important;
+    color: #000000;
+}
+
+p {
+    color: #000000;
+    font-size: 18px;
+    margin: 1em 0;
+    font-style: normal;
+}
+
+img {
+    border: none !important;
+
+}
