@@ -212,6 +212,7 @@ function downloadAllItems(i) {
 			downloadElement(downloadArray[i]);
 			i++;
 			downloadAllItems(i);
+			console.log(downloadArray[i][0]);
 		}, 100);
 	}
 }
