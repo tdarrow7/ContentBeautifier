@@ -158,6 +158,10 @@ function moveCopyAttribute(el) {
     changePosition(newNode);
 }
 
+// when window is inactive/out of focus
+window.addEventListener("blur", () => {
+    ctrlIsPressed = false;
+})
 
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
@@ -206,11 +210,20 @@ document.onkeydown = function (e) {
     let code = e.code.toString();
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = true;
-    if (e.keyCode == 27)
+    // Esc is pressed
+    if (e.code.toString() == "Escape")
         html.classList.remove("previewClicked");
-    if (ctrlIsPressed && (e.keyCode == 67)){
-        // console.log("Ctrl+C");
-        copyFunction();
+    console.log("E.CODE.TOSTRING: ", e.code.toString());
+    if (ctrlIsPressed && e.code.toString() == "KeyT"){
+        console.log("Hey! Ctrl+T event captured!");
+        event.preventDefault();
+        // if (e.code.toString() != "ControlLeft" && e.code.toString() != "ControlRight"){
+        //     ctrlIsPressed = false;
+        // }
+        // Ctrl + C
+        // if (e.code.toString() == "KeyC"){
+        //     copyFunction();
+        // }
     }
 }
 
