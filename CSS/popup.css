@@ -58,23 +58,23 @@ img {
 
 .flex-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 10px 22px;
 }
 
 .flex {
   opacity: 1;
   transition: opacity 0.2s ease-in-out;
-  width: 120px;
+  width: 70px;
 }
 
 .flex:hover {
-  opacity: 0.4;
+  opacity: 1;
 }
 
 .flex .fa {
   font-size: 40px;
-  color: #2f5876;
+  color: #0072ff;
 }
 
 html[data-cbnode] {

@@ -218,6 +218,9 @@ window.addEventListener("click", () => {
     }
     // console.log("event.target.classList: ",  event.target.classList);
     // console.log("event.target.classList.contains('copy'): ",  event.target.classList.contains('copy'));
+
+    getStatus();
+
 });
 
 document.onkeydown = function (e) {
