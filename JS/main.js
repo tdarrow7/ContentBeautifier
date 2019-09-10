@@ -186,27 +186,13 @@ window.addEventListener("click", () => {
     if (event.target.hasAttribute("data-findnode"))
         moveCopyAttribute(event.target);
     if (event.target.classList.contains('preview')) {
-        if (preview.childNodes.length == 0) {
-            let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
-            preview.appendChild(temp);
-            reformatEverythingEverywhere(temp);
-        }
+        clearPreview();
+        fillPreview();
+
         html.classList.add("previewClicked");
     }
     if (event.target.classList.contains('copy')) {
-        if (preview.childNodes.length == 0){
-            let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
-            preview.appendChild(temp);
-            reformatEverythingEverywhere(temp);
-
-
-            // Insert Copy Function Here
-            // console.log("TEMP: ", temp);
-            copyFunction();
-        }
-        else{
-            copyFunction();
-        }
+        copyFunction();
     }
     if (event.target.classList.contains('previewContainer') || event.target.classList.contains('previewClose')) {
         html.classList.remove("previewClicked");
@@ -239,16 +225,13 @@ document.onkeyup = function (e) {
 function copyFunction(){
 
     // checks to see if extension is enabled
-    let nodeCheck = document.querySelector('body [data-cbcopy="true"]');
+    let nodeCheck = document.querySelector('[data-cbcopy="true"]');
     if (nodeCheck){
-        // if previewBox is empty, populate it
-        if (preview.childNodes.length == 0){
-            
-            let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
-            preview.appendChild(temp);
-            reformatEverythingEverywhere(temp);
-        }
 
+        copySwitch();
+        clearPreview();
+        fillPreview();
+    
         // copy contents to clipboard
         if (document.body.createTextRange){
             range = document.body.createTextRange();
@@ -269,6 +252,16 @@ function copyFunction(){
         }
     }
 
+}
+
+function clearPreview(){
+    preview.innerHTML = "";
+}
+
+function fillPreview(){
+    let temp = document.querySelector('[data-cbcopy="true"]').cloneNode(true);
+    preview.appendChild(temp);
+    reformatEverythingEverywhere(temp);
 }
 
 function changePageButtonPosition(arr) {
@@ -292,6 +285,21 @@ function changePageButtonPosition(arr) {
 
     console.log("changePageButtonPosition ran");
 }
+
+function copySwitch(){
+    let allCopy = document.querySelectorAll("a.copy");
+    for (let i = 0; i < allCopy.length; i++){
+        allCopy[i].innerHTML = "Copied";
+    }
+    setTimeout(function copiedToCopy(){
+        let allCopied = document.querySelectorAll("a.copy");
+        for (let i = 0; i < allCopied.length; i++){
+            allCopied[i].innerHTML = "Copy";
+        }
+    }, 3000);
+}
+
+
 
 function addNavButton() {
     let navButtonDiv = document.createElement("div"),
