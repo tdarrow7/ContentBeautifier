@@ -31,8 +31,9 @@ buttonDiv.appendChild(copyButton);
 document.body.appendChild(buttonDiv);
 
 span.append(close);
-divContainer.append(preview);
 divContainer.append(span);
+divContainer.append(preview);
+divContainer.append(copyButton.cloneNode(true));
 
 function changePosition(el) {
     var arr = getPosition(el);
@@ -186,18 +187,17 @@ window.addEventListener("click", () => {
     if (event.target.hasAttribute("data-findnode"))
         moveCopyAttribute(event.target);
     if (event.target.classList.contains('preview')) {
-        if (preview.childNodes.length == 0) {
-            let temp = document.querySelector('body [data-cbcopy="true"]').cloneNode(true);
-            preview.appendChild(temp);
-            reformatEverythingEverywhere(temp);
-        }
+        clearPreview();
+        fillPreview();
+
         html.classList.add("previewClicked");
+    }
+    if (event.target.classList.contains('copy')) {
+        copyFunction();
     }
     if (event.target.classList.contains('previewContainer') || event.target.classList.contains('previewClose')) {
         html.classList.remove("previewClicked");
     }
-    // console.log("event.target.classList: ",  event.target.classList);
-    // console.log("event.target.classList.contains('copy'): ",  event.target.classList.contains('copy'));
 });
 
 document.onkeydown = function (e) {
@@ -208,6 +208,10 @@ document.onkeydown = function (e) {
         ctrlIsPressed = true;
     if (e.keyCode == 27)
         html.classList.remove("previewClicked");
+    if (ctrlIsPressed && (e.keyCode == 67)){
+        // console.log("Ctrl+C");
+        copyFunction();
+    }
 }
 
 document.onkeyup = function (e) {
@@ -215,6 +219,48 @@ document.onkeyup = function (e) {
     let code = e.code.toString();
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = false;
+}
+
+function copyFunction(){
+
+    // checks to see if extension is enabled
+    let nodeCheck = document.querySelector('[data-cbcopy="true"]');
+    if (nodeCheck){
+
+        copySwitch();
+        clearPreview();
+        fillPreview();
+    
+        // copy contents to clipboard
+        if (document.body.createTextRange){
+            range = document.body.createTextRange();
+            range.moveToElementText(preview.firstChild);
+            range.select();
+            document.execCommand('copy');
+        }
+        else if (window.getSelection){
+            selection = window.getSelection();
+            range = document.createRange();
+            range.selectNodeContents(preview.firstChild);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+        }
+        else {
+        alert('Copy Unsuccessful');
+        }
+    }
+
+}
+
+function clearPreview(){
+    preview.innerHTML = "";
+}
+
+function fillPreview(){
+    let temp = document.querySelector('[data-cbcopy="true"]').cloneNode(true);
+    preview.appendChild(temp);
+    reformatEverythingEverywhere(temp);
 }
 
 function changePageButtonPosition(arr) {
@@ -238,6 +284,21 @@ function changePageButtonPosition(arr) {
 
     console.log("changePageButtonPosition ran");
 }
+
+function copySwitch(){
+    let allCopy = document.querySelectorAll("a.copy");
+    for (let i = 0; i < allCopy.length; i++){
+        allCopy[i].innerHTML = "Copied";
+    }
+    setTimeout(function copiedToCopy(){
+        let allCopied = document.querySelectorAll("a.copy");
+        for (let i = 0; i < allCopied.length; i++){
+            allCopied[i].innerHTML = "Copy";
+        }
+    }, 3000);
+}
+
+
 
 function addNavButton() {
     let navButtonDiv = document.createElement("div"),
