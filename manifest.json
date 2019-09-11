@@ -13,7 +13,8 @@
             ],
             "css": [
                 "css/highlighter.css",
-                "css/button.css"
+                "css/button.css",
+                "css/reset.css"
             ],
             "js": [
                 "js/main.js",
