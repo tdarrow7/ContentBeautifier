@@ -46,7 +46,9 @@ function reformatEverythingEverywhere(element) {
 	allElms.push(nodeElms, element);
 
 	// reformat items in list
-	switchStatements(allElms, element);
+	nodeElms = switchStatements(allElms, element);
+	console.log("nodeElms before removeExtraJunk: ", nodeElms);
+	removeExtraJunk(nodeElms);
 }
 
 // general function to swap legacy/incorrect elements with appropriate element equivalent
@@ -60,11 +62,7 @@ function swapElTypes(listofElms, nameOfElm) {
 
 function switchStatements(nodeList, element){
 	for (let i = 0; i < nodeList.length; i++){
-		// console.log("NodeList["+i+"]: ", nodeList[i]);
-		// console.log("NodeList["+i+"].nodeName: ", nodeList[i].nodeName);
-		// console.log("parentN["+i+"]: ", nodeList[i].parentNode);
 	
-
 		let nodeType = nodeList[i].nodeName;
 		switch(nodeType)
 		{
@@ -100,27 +98,36 @@ function switchStatements(nodeList, element){
 				handleLinkElement(nodeList[i]);
 				break;
 		}
+
 		nodeList = element.querySelectorAll("*");
 	}
 
-	// 	//-------------WAS INITIALLY "removeExtraNodes" function-------------//
-
-	// 	// remove HTML comments
-	// 	nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/<!--.*?-->/g, "");
-	// 	// replace non-breaking spaces with spaces
-	// 	nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/&nbsp;/g, " ");
-	// 	// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
-	// 	let temp = nodeList[i].innerText.match(/[^\s\r\t\n]+/g);
-		
-	// 	// if no matches (no 'words') exist
-	// 	if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
-	// 		nodeList[i].remove();
-	// 	}
-
-	// 	//-------------------------------------------------------------------//
-		// download everything in downloadArray
+			// download everything in downloadArray
 		downloadAllItems(0);
+		return nodeList;
 }
+
+function removeExtraJunk(allNodes){
+
+	// 	//-------------WAS INITIALLY "removeExtraNodes" function-------------//
+	for (let i = 0; i < allNodes.length; i++){
+			// remove HTML comments
+			allNodes[i].innerHTML = allNodes[i].innerHTML.replace(/<!--.*?-->/g, "");
+			// replace non-breaking spaces with spaces
+			allNodes[i].innerHTML = allNodes[i].innerHTML.replace(/&nbsp;/g, " ");
+			// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
+			let temp = allNodes[i].innerText.match(/[^\s\r\t\n]+/g);
+			
+			console.log("Temp is: ", temp);
+			// if no matches (no 'words') exist
+			if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
+				// console.log("TempLength is: ", temp.length);
+				allNodes[i].remove();
+			}
+		}
+	
+}
+
 
 // creates '<p>' tag with innerHTML equal to 'string'
 function createNewP(string) {

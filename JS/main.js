@@ -165,17 +165,6 @@ window.addEventListener("blur", () => {
 
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
-    // console.log("event.target: ", event.target);
-    // console.log("QuerySelector Value: ", document.querySelector('i[toggle="true"]')) ;
-    // console.log("Toggle True: ", event.target.contains(document.querySelector('i[toggle="true"]')) );
-    // console.log("Toggle False: ", event.target.contains(document.querySelector('i[toggle="false"]')) );
-    if (event.target.contains(document.querySelector('i[toggle="true"]'))) {
-        console.log("toggle on");
-
-    }
-    if (event.target.contains(document.querySelector('i[toggle="false"]'))) {
-        console.log("toggle off");
-    }
 
     if (
         !event.target.parentNode.hasAttribute("data-nav")
@@ -204,7 +193,6 @@ window.addEventListener("click", () => {
 
 document.onkeydown = function (e) {
     e = e || window.event;
-    // console.log(e.code);
     let code = e.code.toString();
     if (code == 'ControlLeft' || code == 'ControlRight'){
         ctrlIsPressed = true;
@@ -272,7 +260,7 @@ function copyFunction(){
     }
 
 }
-
+// Start of PreviewBox Manipulation Functions
 function clearPreview(){
     preview.innerHTML = "";
 }
@@ -282,6 +270,7 @@ function fillPreview(){
     preview.appendChild(temp);
     reformatEverythingEverywhere(temp);
 }
+// End of PreviewBox Manipulation Functions
 
 function changePageButtonPosition(arr) {
     let { height, width, left, top } = arr;
@@ -335,7 +324,6 @@ function addNavButton() {
 
     navButtonDiv.appendChild(navPreviewButton);
     navButtonDiv.appendChild(navCopyButton);
-
 
     dataNav.appendChild(navButtonDiv);
     console.log("addNavButton ran");
