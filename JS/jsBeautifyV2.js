@@ -66,32 +66,51 @@ function switchStatements(nodeList, element){
 		let nodeType = nodeList[i].nodeName;
 		switch(nodeType)
 		{
-			case "SPAN": 
-				let parentN2 = nodeList[i].parentNode;
-				let parentN2Name = parentN2.nodeName,
-					removeSpanIf = ["UL", "OL", "LI", "P"];
-				if (removeSpanIf.indexOf(parentN2Name) > -1)
-					nodeList[i].outerHTML = nodeList[i].innerHTML;
+			case "UL":
+				let pNodeUL = nodeList[i];
+				for (let x = 0; x < pNodeUL.children.length; x++){
+					if (pNodeUL.children[x].nodeName == "SPAN"){
+						pNodeUL.children[x].remove();
+					}
+				}	
+				break;
+			case "OL":
+				let pNodeOL = nodeList[i];
+				for (let x = 0; x < pNodeOL.children.length; x++){
+					if (pNodeOL.children[x].nodeName == "SPAN"){
+						pNodeOL.children[x].remove();
+					}
+				}	
+				break;
+			case "LI":
+				let pNodeLI = nodeList[i];
+				for (let x = 0; x < pNodeLI.children.length; x++){
+					if (pNodeLI.children[x].nodeName == "SPAN"){
+						pNodeLI.children[x].remove();
+					}
+				}	
 				break;
 			case "P":
-				let pNode = nodeList[i];
-				for (let x = 0; x < pNode.children.length; x++){
-					if (pNode.children[x].nodeName == "BR"){
-						let newPTagList = pNode.innerHTML.split("<br>");
+				let pNodeP = nodeList[i];
+				for (let x = 0; x < pNodeP.children.length; x++){
+					if (pNodeP.children[x].nodeName == "BR"){
+						let newPTagList = pNodeP.innerHTML.split("<br>");
 						newPTagList = newPTagList.map(createNewP);
 						let nodesFragment = document.createDocumentFragment();
 						for (let tag of newPTagList){
 							nodesFragment.appendChild(tag);
 						}
 
-						let parentN3 = pNode.parentNode; 
-						parentN3.replaceChild(nodesFragment, pNode);
+						let parentN3 = pNodeP.parentNode; 
+						parentN3.replaceChild(nodesFragment, pNodeP);
 						break;
+					}
+					if (pNodeP.children[x].nodeName == "SPAN"){
+						pNodeP.children[x].remove();
 					}
 				}	
 				break;
 			case "IMG":
-				let parentN4 = nodeList[i].parentNode;
 				handleImageElement(nodeList[i]);
 				break;
 			case "A":
