@@ -1,7 +1,6 @@
 let downloadArray = [],
 	errorArray = [];
 
-	console.log('inside v2');
 
 // run through the HTML and Reformat EVERYTHING
 function reformatEverythingEverywhere(element) {
@@ -126,7 +125,6 @@ function switchStatements(nodeList, element){
 function createNewP(string) {
 	let newP = document.createElement("p");
 	newP.innerHTML = string.replace(/\u21B5/g, "");
-	console.log("newP.innerHTML: ", newP.innerHTML);
 	// return '<p>' + string + '</p>';
 	return newP;
 }
@@ -212,7 +210,6 @@ function downloadAllItems(i) {
 			downloadElement(downloadArray[i]);
 			i++;
 			downloadAllItems(i);
-			console.log(downloadArray[i][0]);
 		}, 100);
 	}
 }

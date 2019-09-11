@@ -99,7 +99,6 @@ function findNodeTree(event) {
         "data-cbnode": tree.length
     });
     tree.push(el);
-    console.log(el.getBoundingClientRect());
     changePosition(el);
     while (parentEl && parentEl.nodeName != "#document") {
         setMultipleAttributes(parentEl, { "data-cbnode": tree.length });
@@ -161,16 +160,9 @@ function moveCopyAttribute(el) {
 
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
-    // console.log("event.target: ", event.target);
-    // console.log("QuerySelector Value: ", document.querySelector('i[toggle="true"]')) ;
-    // console.log("Toggle True: ", event.target.contains(document.querySelector('i[toggle="true"]')) );
-    // console.log("Toggle False: ", event.target.contains(document.querySelector('i[toggle="false"]')) );
     if (event.target.contains(document.querySelector('i[toggle="true"]'))) {
-        console.log("toggle on");
-
     }
     if (event.target.contains(document.querySelector('i[toggle="false"]'))) {
-        console.log("toggle off");
     }
 
     if (ctrlIsPressed) {
@@ -206,14 +198,12 @@ window.addEventListener("click", () => {
 
 document.onkeydown = function (e) {
     e = e || window.event;
-    // console.log(e.code);
     let code = e.code.toString();
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = true;
     if (e.keyCode == 27)
         html.classList.remove("previewClicked");
     if (ctrlIsPressed && (e.keyCode == 67)){
-        // console.log("Ctrl+C");
         copyFunction();
     }
 }
@@ -271,10 +261,6 @@ function fillPreview(){
 
 function changePageButtonPosition(arr) {
     let { height, width, left, top } = arr;
-    console.log('top: ' + top);
-    console.log('left: ' + left);
-    console.log('width: ' + width);
-    console.log('height: ' + height);
     var styleString =
         "visibility: visible !important; opacity: 1 !important; top: " +
         (top + height + 10) +
@@ -288,7 +274,6 @@ function changePageButtonPosition(arr) {
         style: styleString
     })
 
-    console.log("changePageButtonPosition ran");
 }
 
 function copySwitch(){
@@ -324,5 +309,4 @@ function addNavButton() {
 
 
     dataNav.appendChild(navButtonDiv);
-    console.log("addNavButton ran");
 }
