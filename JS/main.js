@@ -7,8 +7,8 @@ let el = null,
     html = document.querySelector("html"),
     divContainer = document.createElement("div"),
     preview = document.createElement("div"),
-    close = document.createElement("a"),
     span = document.createElement("span"),
+    altIsPressed = false,
     ctrlIsPressed = false,
     buttonDiv = document.createElement("div"),
     previewButton = document.createElement("a"),
@@ -19,7 +19,6 @@ setMultipleAttributes(navDiv, { "nav-div": "", class: "nav-div" });
 setMultipleAttributes(preview, { "previewBox": "", class: "previewBox" });
 setMultipleAttributes(divContainer, { "previewContainer": "", class: "previewContainer" });
 setMultipleAttributes(span, { "previewClose": "", class: "previewClose" });
-setMultipleAttributes(close, { "previewClose": "", class: "previewClose" });
 copyButton.setAttribute("class", "cb-btn v2 copy");
 previewButton.setAttribute("class", "cb-btn v1 preview");
 
@@ -30,7 +29,6 @@ buttonDiv.appendChild(previewButton);
 buttonDiv.appendChild(copyButton);
 document.body.appendChild(buttonDiv);
 
-span.append(close);
 divContainer.append(span);
 divContainer.append(preview);
 divContainer.append(copyButton.cloneNode(true));
@@ -99,7 +97,6 @@ function findNodeTree(event) {
         "data-cbnode": tree.length
     });
     tree.push(el);
-    console.log(el.getBoundingClientRect());
     changePosition(el);
     while (parentEl && parentEl.nodeName != "#document") {
         setMultipleAttributes(parentEl, { "data-cbnode": tree.length });
@@ -109,6 +106,16 @@ function findNodeTree(event) {
 
     // create visual representation of tree
     createRepresentationOfTree();
+}
+
+// cycle through all items with classes and remove the classes
+function removeMultipleAttributes(nodeArray, [attrNames]) {
+	let elmArray = Array.prototype.slice.call(nodeArray);
+	for (let i = 0; i < elmArray.length; i++) {
+		for (let j = 0; j < attrNames.length; j++){
+			elmArray[i].removeAttribute(attrNames[j]);
+		}
+	}
 }
 
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
@@ -160,6 +167,7 @@ function moveCopyAttribute(el) {
 
 // when window is inactive/out of focus
 window.addEventListener("blur", () => {
+    altIsPressed = false;
     ctrlIsPressed = false;
 });
 
@@ -172,11 +180,13 @@ window.addEventListener("click", () => {
         && !event.target.parentNode.hasAttribute("nav-div")
         && !event.target.hasAttribute("data-cbspecial")
     )
-    if (ctrlIsPressed){
+    if (altIsPressed){
         findNodeTree(event);
+        resetDownloadErrorArrays();
     }
     if (event.target.hasAttribute("data-findnode"))
         moveCopyAttribute(event.target);
+        resetDownloadErrorArrays();
     if (event.target.classList.contains('preview')) {
         clearPreview();
         fillPreview();
@@ -194,10 +204,11 @@ window.addEventListener("click", () => {
 document.onkeydown = function (e) {
     e = e || window.event;
     let code = e.code.toString();
-    if (code == 'ControlLeft' || code == 'ControlRight'){
+    if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = true;
-        
-    }
+    if (code == 'AltLeft' || code == 'AltRight')
+        altIsPressed = true;
+    
     // Esc is pressed
 
     if (e.code.toString() == "Escape"){
@@ -227,6 +238,8 @@ document.onkeyup = function (e) {
     let code = e.code.toString();
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = false;
+    if (code == 'AltLeft' || code == 'AltRight')
+        altIsPressed = false;
 }
 
 function copyFunction(){
@@ -253,6 +266,7 @@ function copyFunction(){
             selection.removeAllRanges();
             selection.addRange(range);
             document.execCommand('copy');
+            downloadAllItems(0);
         }
         else {
         alert('Copy Unsuccessful');
@@ -268,16 +282,13 @@ function clearPreview(){
 function fillPreview(){
     let temp = document.querySelector('[data-cbcopy="true"]').cloneNode(true);
     preview.appendChild(temp);
+    resetDownloadErrorArrays();
     reformatEverythingEverywhere(temp);
 }
 // End of PreviewBox Manipulation Functions
 
 function changePageButtonPosition(arr) {
     let { height, width, left, top } = arr;
-    console.log('top: ' + top);
-    console.log('left: ' + left);
-    console.log('width: ' + width);
-    console.log('height: ' + height);
     var styleString =
         "visibility: visible !important; opacity: 1 !important; top: " +
         (top + height + 10) +
@@ -291,7 +302,6 @@ function changePageButtonPosition(arr) {
         style: styleString
     })
 
-    console.log("changePageButtonPosition ran");
 }
 
 function copySwitch(){
@@ -326,5 +336,4 @@ function addNavButton() {
     navButtonDiv.appendChild(navCopyButton);
 
     dataNav.appendChild(navButtonDiv);
-    console.log("addNavButton ran");
 }
