@@ -130,9 +130,6 @@ function switchStatements(element, which){
 		}
 	}
 
-	// download everything in downloadArray
-	downloadAllItems(0);
-
 	if (which === "children")
 		// run function on parent node (node that was clicked on)
 		switchStatements(element, "parent");
