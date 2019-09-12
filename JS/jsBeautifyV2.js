@@ -11,10 +11,31 @@ function reformatEverythingEverywhere(element) {
 
 	let allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
-	
+
+	// remove all classes and styles for all elements
+	removeAttributes(allElms, ['class', 'style', 'data-cbnode', 'data-cbcopy']);
+
 	// verify that only one h1 exists
 	VerifySingleH1(h1Tags);
 
+	// reformat legacy tags
+	reformatLegacyTags(element);
+
+	// reformat items in list
+	switchStatements(element, "children");
+}
+
+// general function to swap legacy/incorrect elements with appropriate element equivalent
+function swapElTypes(listofElms, nameOfElm) {
+	for (let i = 0; i < listofElms.length; i++) {
+		let replaceTag = document.createElement(nameOfElm);
+		replaceTag.innerHTML = listofElms[i].innerHTML;
+		listofElms[i].parentNode.replaceChild(replaceTag, listofElms[i]);
+	}
+}
+
+// reformat legacy tags
+function reformatLegacyTags(element){
 	// reformat legacy bold tags
 	let bTags = Array.prototype.slice.call(element.querySelectorAll('b'));
 	if (element.nodeName == "B")
@@ -28,42 +49,12 @@ function reformatEverythingEverywhere(element) {
 	swapElTypes(bTags, 'strong');
 	swapElTypes(iTags, 'em');
 	
-	// remove all classes and styles for all elements
-	removeAttribute(allElms, 'class');
-	removeAttribute(allElms, 'style');
-	removeAttribute(allElms, 'data-cbnode');
-	removeAttribute(allElms, 'data-cbcopy');
-
-	// recall all elements after doing modifications
-	nodeElms = element.querySelectorAll('*');
-	allElms = Array.prototype.slice.call(nodeElms);
-	allElms.push(element);
-	// check phone number formatting in text
-	restructureTele(allElms);
-
-	// recall all elements after checking for phone numbers
-	nodeElms = element.querySelectorAll('*');
-	allElms.push(nodeElms, element);
-
-	// reformat items in list
-	nodeElms = switchStatements(element, "children");
-	// console.log("nodeElms before removeExtraJunk: ", nodeElms);
-	removeExtraJunk(nodeElms, 0);
-}
-
-// general function to swap legacy/incorrect elements with appropriate element equivalent
-function swapElTypes(listofElms, nameOfElm) {
-	for (let i = 0; i < listofElms.length; i++) {
-		let replaceTag = document.createElement(nameOfElm);
-		replaceTag.innerHTML = listofElms[i].innerHTML;
-		listofElms[i].parentNode.replaceChild(replaceTag, listofElms[i]);
-	}
 }
 
 // goes through nodeList and reformats based on nodeName property
+// Helper Functions: removeExtraJunk(node), restructureTele(node)
 function switchStatements(element, which){
 	let nodeList = null;
-	console.log("Element: ", element);
 
 	if (which === "children"){
 		nodeList = element.getElementsByTagName("*");
@@ -72,14 +63,17 @@ function switchStatements(element, which){
 		// element needs to be in a list, because 'element' is not a list and therefore doesn't have a length (needed to enter the for loop)
 		nodeList = [element];
 	}
-	console.log("nodeListNow: ", nodeList);
-	console.log("nodeListNow.type: ", typeof(nodeList));
 	
 	for (let i = 0; i < nodeList.length; i++){
-		console.log("nodeList: ", nodeList);
+
+		// clean up innerHTML first before checking cases
+		removeExtraJunk(nodeList[i]);
+		restructureTele(nodeList[i]);
+
 		let nodeType = nodeList[i].nodeName;
 		switch(nodeType)
 		{
+			// if the UL node has a SPAN child, remove the SPAN child node
 			case "UL":
 				let pNodeUL = nodeList[i];
 				for (let x = 0; x < pNodeUL.children.length; x++){
@@ -88,6 +82,7 @@ function switchStatements(element, which){
 					}
 				}	
 				break;
+			// if the OL node has a SPAN child, remove the SPAN child node
 			case "OL":
 				let pNodeOL = nodeList[i];
 				for (let x = 0; x < pNodeOL.children.length; x++){
@@ -96,6 +91,7 @@ function switchStatements(element, which){
 					}
 				}	
 				break;
+			// if the LI node has a SPAN child, remove the SPAN child node
 			case "LI":
 				let pNodeLI = nodeList[i];
 				for (let x = 0; x < pNodeLI.children.length; x++){
@@ -104,6 +100,9 @@ function switchStatements(element, which){
 					}
 				}	
 				break;
+			// if the P node has a BR child, split the P innerHTMl by the <br> tags, 
+			// and create/add new paragraph elements containing the split strings
+			// else if the P node has a SPAN child, remove the SPAN child node
 			case "P":
 				let pNodeP = nodeList[i];
 				for (let x = 0; x < pNodeP.children.length; x++){
@@ -124,9 +123,11 @@ function switchStatements(element, which){
 					}
 				}	
 				break;
+			// if an IMG node, try to download 'IMG' link
 			case "IMG":
 				handleImageElement(nodeList[i]);
 				break;
+			// if an A node, try to download 'A' link
 			case "A":
 				handleLinkElement(nodeList[i]);
 				break;
@@ -135,65 +136,47 @@ function switchStatements(element, which){
 
 	// download everything in downloadArray
 	downloadAllItems(0);
+
 	if (which === "children"){
+		// run function on parent node (node that was clicked on)
 		switchStatements(element, "parent");
 	}
-	nodeList = element.getElementsByTagName("*");
-	console.log("finalNodeList: ", nodeList);
-	return nodeList;
+	// end of function
+	return;
 }
 
-function removeExtraJunk(allNodes, index){
-	
-	// console.log("allNodes BEFORE FUNCTION: ", allNodes);
-	for (let i = index; i < allNodes.length; i++){
-		// console.log("RemoveExtraJunk["+i+"]: ", allNodes[i]);
+// removes HTML comments and replaces non-breaking spaces with spaces
+function removeExtraJunk(node){
 		// remove HTML comments
-		allNodes[i].innerHTML = allNodes[i].innerHTML.replace(/<!--.*?-->/g, "");
+		node.innerHTML = node.innerHTML.replace(/<!--.*?-->/g, "");
 		// replace non-breaking spaces with spaces
-		allNodes[i].innerHTML = allNodes[i].innerHTML.replace(/&nbsp;/g, " ");
-		// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
-		let temp = allNodes[i].innerText.match(/[^\s\r\t\n]+/g);
-		
-		// console.log("TEMP["+i+"]: ", temp);
-		// console.log("AFTER: RemoveExtraJunk["+i+"].innerHTML: ", allNodes[i].innerHTML);
-		
-		// if no matches (no 'words') exist
-		if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
-			allNodes[i].remove();
-			removeExtraJunk(allNodes, i);
-			return;
-		}
-		// console.log("allNodes NEW: ", allNodes);
-		
-	}
-	// console.log("allNodes AFTER FUNCTION: ", allNodes);
-	
+		node.innerHTML = node.innerHTML.replace(/&nbsp;/g, " ");
 }
-
 
 // creates '<p>' tag with innerHTML equal to 'string'
 function createNewP(string) {
 	let newP = document.createElement("p");
 	newP.innerHTML = string.replace(/\u21B5/g, "");
-	console.log("newP.innerHTML: ", newP.innerHTML);
 	// return '<p>' + string + '</p>';
 	return newP;
 }
 
 // checks/handles element to make sure there is only one H1 header
 function VerifySingleH1(nodeArray) {
+	
 	let elArray = Array.prototype.slice.call(nodeArray);
-	elArray.unshift();
+	elArray.shift();
 	if (elArray.length > 0) 
 		swapElTypes(elArray, 'h2');
 }
 
 // cycle through all items with classes and remove the classes
-function removeAttribute(nodeArray, attrName) {
+function removeAttributes(nodeArray, [attrNames]) {
 	let elmArray = Array.prototype.slice.call(nodeArray);
 	for (let i = 0; i < elmArray.length; i++) {
-		elmArray[i].removeAttribute(attrName);
+		for (let j = 0; j < attrNames.length; j++){
+			elmArray[i].removeAttribute(attrNames[j]);
+		}
 	}
 }
 
@@ -209,32 +192,24 @@ function handleImageElement(element) {
 }
 
 // restructure all text that can be phone numbers into phone number links
-function restructureTele(nodeList) {
-	// list of telephone number 'nodes' that need "tel: " links
-	let teleNodeList = [];
-	for (let i = 0; i < nodeList.length; i++) {
+function restructureTele(node) {
 		// searches for phone number with various formats
-		if ((/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g).exec(nodeList[i].innerHTML)) {
+		if ((/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g).exec(node.innerHTML)) {
 			// add node to teleNodeList if innerHTMl doesn't have "tel:" link in it
-			if (nodeList[i].outerHTML.search("tel:") == -1) {
-				teleNodeList.push(nodeList[i]);
+			if (node.outerHTML.search("tel:") == -1) {
+				let updatedTeleLinkNodes = [];
+				updatedTeleLinkNodes = node.innerHTML.match(/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g);
+				for (let i = 0; i < updatedTeleLinkNodes.length; i++) {
+					// create anchor/link tag
+					let a = document.createElement("a");
+					a.href = "tel:" + updatedTeleLinkNodes[i].replace(/[\.\(\)\-]/g, "");
+					// populate anchor tag link area with new cleaned up number
+					a.innerHTML = updatedTeleLinkNodes[i];
+					// replace old node with newly made node with link
+					node.innerHTML = node.innerHTML.replace(updatedTeleLinkNodes[i], a.outerHTML);
+				}
 			}
 		}
-	}
-	// takes teleNodeList, strips each number of special characters, then creates a link for that node
-	for (let i = 0; i < teleNodeList.length; i++) {
-		let updatedTeleLinkNodes = [];
-		updatedTeleLinkNodes = teleNodeList[i].innerHTML.match(/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g);
-		for (let j = 0; j < updatedTeleLinkNodes.length; j++) {
-			// create anchor/link tag
-			let a = document.createElement("a");
-			a.href = "tel:" + updatedTeleLinkNodes[j].replace(/[\.\(\)\-]/g, "");
-			// populate anchor tag link area with new cleaned up number
-			a.innerHTML = updatedTeleLinkNodes[j];
-			// replace old node with newly made node with link
-			teleNodeList[i].innerHTML = teleNodeList[i].innerHTML.replace(updatedTeleLinkNodes[j], a.outerHTML);
-		}
-	}
 }
 
 // check if link is a useful link to process
