@@ -6,17 +6,16 @@ let downloadArray = [],
 // run through the HTML and Reformat EVERYTHING
 function reformatEverythingEverywhere(element) {
 
-	let nodeElms = element.querySelectorAll('*'),
-		h1Tags = element.querySelectorAll('h1');
+	let nodeElms = element.querySelectorAll('*');
 
 	let allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
 
 	// remove all classes and styles for all elements
-	removeAttributes(allElms, ['class', 'style', 'data-cbnode', 'data-cbcopy']);
+	removeMultipleAttributes(allElms, ['class', 'style', 'data-cbnode', 'data-cbcopy']);
 
 	// verify that only one h1 exists
-	VerifySingleH1(h1Tags);
+	VerifySingleH1(element.querySelectorAll('h1'));
 
 	// reformat legacy tags
 	reformatLegacyTags(element);
@@ -43,12 +42,12 @@ function reformatLegacyTags(element){
 	
 	// reformat legacy italic tags
 	let iTags = Array.prototype.slice.call(element.querySelectorAll('i'));
-	if (element.nodeName == "I"){
+	if (element.nodeName == "I")
 		iTags.push(element);
-	}
+	
+	// run element swap functions
 	swapElTypes(bTags, 'strong');
 	swapElTypes(iTags, 'em');
-	
 }
 
 // goes through nodeList and reformats based on nodeName property
@@ -56,13 +55,11 @@ function reformatLegacyTags(element){
 function switchStatements(element, which){
 	let nodeList = null;
 
-	if (which === "children"){
+	if (which === "children")
 		nodeList = element.getElementsByTagName("*");
-	}
-	if (which === "parent") {
+	if (which === "parent")
 		// element needs to be in a list, because 'element' is not a list and therefore doesn't have a length (needed to enter the for loop)
 		nodeList = [element];
-	}
 	
 	for (let i = 0; i < nodeList.length; i++){
 
@@ -137,10 +134,9 @@ function switchStatements(element, which){
 	// download everything in downloadArray
 	downloadAllItems(0);
 
-	if (which === "children"){
+	if (which === "children")
 		// run function on parent node (node that was clicked on)
 		switchStatements(element, "parent");
-	}
 	// end of function
 	return;
 }
@@ -168,16 +164,6 @@ function VerifySingleH1(nodeArray) {
 	elArray.shift();
 	if (elArray.length > 0) 
 		swapElTypes(elArray, 'h2');
-}
-
-// cycle through all items with classes and remove the classes
-function removeAttributes(nodeArray, [attrNames]) {
-	let elmArray = Array.prototype.slice.call(nodeArray);
-	for (let i = 0; i < elmArray.length; i++) {
-		for (let j = 0; j < attrNames.length; j++){
-			elmArray[i].removeAttribute(attrNames[j]);
-		}
-	}
 }
 
 // handle found image element

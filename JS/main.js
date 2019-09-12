@@ -111,6 +111,16 @@ function findNodeTree(event) {
     createRepresentationOfTree();
 }
 
+// cycle through all items with classes and remove the classes
+function removeMultipleAttributes(nodeArray, [attrNames]) {
+	let elmArray = Array.prototype.slice.call(nodeArray);
+	for (let i = 0; i < elmArray.length; i++) {
+		for (let j = 0; j < attrNames.length; j++){
+			elmArray[i].removeAttribute(attrNames[j]);
+		}
+	}
+}
+
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
     navDiv.innerHTML = "";
