@@ -110,6 +110,16 @@ function findNodeTree(event) {
     createRepresentationOfTree();
 }
 
+// cycle through all items with classes and remove the classes
+function removeMultipleAttributes(nodeArray, [attrNames]) {
+	let elmArray = Array.prototype.slice.call(nodeArray);
+	for (let i = 0; i < elmArray.length; i++) {
+		for (let j = 0; j < attrNames.length; j++){
+			elmArray[i].removeAttribute(attrNames[j]);
+		}
+	}
+}
+
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
     navDiv.innerHTML = "";
@@ -157,17 +167,14 @@ function moveCopyAttribute(el) {
     changePosition(newNode);
 }
 
+// when window is inactive/out of focus
+window.addEventListener("blur", () => {
+    ctrlIsPressed = false;
+});
 
 // listen for click events in the window. On click, call findNodeTree function
 window.addEventListener("click", () => {
-    if (event.target.contains(document.querySelector('i[toggle="true"]'))) {
-    }
-    if (event.target.contains(document.querySelector('i[toggle="false"]'))) {
-    }
 
-    if (ctrlIsPressed) {
-        event.preventDefault();
-    }
     if (
         !event.target.parentNode.hasAttribute("data-nav")
         && !event.target.hasAttribute("data-nav")
@@ -199,12 +206,31 @@ window.addEventListener("click", () => {
 document.onkeydown = function (e) {
     e = e || window.event;
     let code = e.code.toString();
-    if (code == 'ControlLeft' || code == 'ControlRight')
+    if (code == 'ControlLeft' || code == 'ControlRight'){
         ctrlIsPressed = true;
-    if (e.keyCode == 27)
-        html.classList.remove("previewClicked");
-    if (ctrlIsPressed && (e.keyCode == 67)){
-        copyFunction();
+        
+    }
+    // Esc is pressed
+
+    if (e.code.toString() == "Escape"){
+        if (html.classList.contains("previewClicked")){
+            html.classList.remove("previewClicked");
+        }
+        else {
+            document.querySelector("div.highlighter").setAttribute("style", "");
+            document.querySelector("div.btn-container").setAttribute("style", "");
+
+            // reset innerHTML, prevent addition of extra elements on rebuild 
+            document.querySelector("nav.data-nav").innerHTML = "";
+            document.querySelector("nav.data-nav").remove();
+            clearNodeTree();
+        }
+    }
+    if (ctrlIsPressed){
+        // Ctrl + C
+        if (e.code.toString() == "KeyC"){
+            copyFunction();
+        }
     }
 }
 
@@ -247,7 +273,7 @@ function copyFunction(){
     }
 
 }
-
+// Start of PreviewBox Manipulation Functions
 function clearPreview(){
     preview.innerHTML = "";
 }
@@ -258,6 +284,7 @@ function fillPreview(){
     resetDownloadErrorArrays();
     reformatEverythingEverywhere(temp);
 }
+// End of PreviewBox Manipulation Functions
 
 function changePageButtonPosition(arr) {
     let { height, width, left, top } = arr;
@@ -306,7 +333,6 @@ function addNavButton() {
 
     navButtonDiv.appendChild(navPreviewButton);
     navButtonDiv.appendChild(navCopyButton);
-
 
     dataNav.appendChild(navButtonDiv);
 }

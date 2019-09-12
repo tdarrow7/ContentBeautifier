@@ -5,47 +5,22 @@ let downloadArray = [],
 // run through the HTML and Reformat EVERYTHING
 function reformatEverythingEverywhere(element) {
 
-	let nodeElms = element.querySelectorAll('*'),
-		h1Tags = element.querySelectorAll('h1');
+	let nodeElms = element.querySelectorAll('*');
 
 	let allElms = Array.prototype.slice.call(nodeElms);
 	allElms.push(element);
-	
-	// verify that only one h1 exists
-	VerifySingleH1(h1Tags);
 
-	// reformat legacy bold tags
-	let bTags = Array.prototype.slice.call(element.querySelectorAll('b'));
-	if (element.nodeName == "B")
-		bTags.push(element);
-	
-	// reformat legacy italic tags
-	let iTags = Array.prototype.slice.call(element.querySelectorAll('i'));
-	if (element.nodeName == "I"){
-		iTags.push(element);
-	}
-	swapElTypes(bTags, 'strong');
-	swapElTypes(iTags, 'em');
-	
 	// remove all classes and styles for all elements
-	removeAttribute(allElms, 'class');
-	removeAttribute(allElms, 'style');
-	removeAttribute(allElms, 'data-cbnode');
-	removeAttribute(allElms, 'data-cbcopy');
+	removeMultipleAttributes(allElms, ['class', 'style', 'data-cbnode', 'data-cbcopy']);
 
-	// recall all elements after doing modifications
-	nodeElms = element.querySelectorAll('*');
-	allElms = Array.prototype.slice.call(nodeElms);
-	allElms.push(element);
-	// check phone number formatting in text
-	restructureTele(allElms);
+	// verify that only one h1 exists
+	VerifySingleH1(element.querySelectorAll('h1'));
 
-	// recall all elements after checking for phone numbers
-	nodeElms = element.querySelectorAll('*');
-	allElms.push(nodeElms, element);
+	// reformat legacy tags
+	reformatLegacyTags(element);
 
 	// reformat items in list
-	switchStatements(allElms, element);
+	switchStatements(element, "children");
 }
 
 // general function to swap legacy/incorrect elements with appropriate element equivalent
@@ -57,68 +32,120 @@ function swapElTypes(listofElms, nameOfElm) {
 	}
 }
 
-function switchStatements(nodeList, element){
-	for (let i = 0; i < nodeList.length; i++){
-		// console.log("NodeList["+i+"]: ", nodeList[i]);
-		// console.log("NodeList["+i+"].nodeName: ", nodeList[i].nodeName);
-		// console.log("parentN["+i+"]: ", nodeList[i].parentNode);
+// reformat legacy tags
+function reformatLegacyTags(element){
+	// reformat legacy bold tags
+	let bTags = Array.prototype.slice.call(element.querySelectorAll('b'));
+	if (element.nodeName == "B")
+		bTags.push(element);
 	
+	// reformat legacy italic tags
+	let iTags = Array.prototype.slice.call(element.querySelectorAll('i'));
+	if (element.nodeName == "I")
+		iTags.push(element);
+	
+	// run element swap functions
+	swapElTypes(bTags, 'strong');
+	swapElTypes(iTags, 'em');
+}
+
+// goes through nodeList and reformats based on nodeName property
+// Helper Functions: removeExtraJunk(node), restructureTele(node)
+function switchStatements(element, which){
+	let nodeList = null;
+
+	if (which === "children")
+		nodeList = element.getElementsByTagName("*");
+	if (which === "parent")
+		// element needs to be in a list, because 'element' is not a list and therefore doesn't have a length (needed to enter the for loop)
+		nodeList = [element];
+	
+	for (let i = 0; i < nodeList.length; i++){
+
+		// clean up innerHTML first before checking cases
+		removeExtraJunk(nodeList[i]);
+		restructureTele(nodeList[i]);
 
 		let nodeType = nodeList[i].nodeName;
 		switch(nodeType)
 		{
-			case "SPAN": 
-				let parentN2 = nodeList[i].parentNode;
-				let parentN2Name = parentN2.nodeName,
-					removeSpanIf = ["UL", "OL", "LI", "P"];
-				if (removeSpanIf.indexOf(parentN2Name) > -1)
-					nodeList[i].outerHTML = nodeList[i].innerHTML;
+			// if the UL node has a SPAN child, remove the SPAN child node
+			case "UL":
+				let pNodeUL = nodeList[i];
+				for (let x = 0; x < pNodeUL.children.length; x++){
+					if (pNodeUL.children[x].nodeName == "SPAN"){
+						pNodeUL.children[x].remove();
+					}
+				}	
 				break;
+			// if the OL node has a SPAN child, remove the SPAN child node
+			case "OL":
+				let pNodeOL = nodeList[i];
+				for (let x = 0; x < pNodeOL.children.length; x++){
+					if (pNodeOL.children[x].nodeName == "SPAN"){
+						pNodeOL.children[x].remove();
+					}
+				}	
+				break;
+			// if the LI node has a SPAN child, remove the SPAN child node
+			case "LI":
+				let pNodeLI = nodeList[i];
+				for (let x = 0; x < pNodeLI.children.length; x++){
+					if (pNodeLI.children[x].nodeName == "SPAN"){
+						pNodeLI.children[x].remove();
+					}
+				}	
+				break;
+			// if the P node has a BR child, split the P innerHTMl by the <br> tags, 
+			// and create/add new paragraph elements containing the split strings
+			// else if the P node has a SPAN child, remove the SPAN child node
 			case "P":
-				let pNode = nodeList[i];
-				for (let x = 0; x < pNode.children.length; x++){
-					if (pNode.children[x].nodeName == "BR"){
-						let newPTagList = pNode.innerHTML.split("<br>");
+				let pNodeP = nodeList[i];
+				for (let x = 0; x < pNodeP.children.length; x++){
+					if (pNodeP.children[x].nodeName == "BR"){
+						let newPTagList = pNodeP.innerHTML.split("<br>");
 						newPTagList = newPTagList.map(createNewP);
 						let nodesFragment = document.createDocumentFragment();
 						for (let tag of newPTagList){
 							nodesFragment.appendChild(tag);
 						}
 
-						let parentN3 = pNode.parentNode; 
-						parentN3.replaceChild(nodesFragment, pNode);
+						let parentP = pNodeP.parentNode; 
+						parentP.replaceChild(nodesFragment, pNodeP);
 						break;
+					}
+					if (pNodeP.children[x].nodeName == "SPAN"){
+						pNodeP.children[x].remove();
 					}
 				}	
 				break;
+			// if an IMG node, try to download 'IMG' link
 			case "IMG":
-				let parentN4 = nodeList[i].parentNode;
 				handleImageElement(nodeList[i]);
 				break;
+			// if an A node, try to download 'A' link
 			case "A":
 				handleLinkElement(nodeList[i]);
 				break;
 		}
-		nodeList = element.querySelectorAll("*");
 	}
 
-	// 	//-------------WAS INITIALLY "removeExtraNodes" function-------------//
+	// download everything in downloadArray
+	downloadAllItems(0);
 
-	// 	// remove HTML comments
-	// 	nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/<!--.*?-->/g, "");
-	// 	// replace non-breaking spaces with spaces
-	// 	nodeList[i].innerHTML = nodeList[i].innerHTML.replace(/&nbsp;/g, " ");
-	// 	// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
-	// 	let temp = nodeList[i].innerText.match(/[^\s\r\t\n]+/g);
-		
-	// 	// if no matches (no 'words') exist
-	// 	if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
-	// 		nodeList[i].remove();
-	// 	}
+	if (which === "children")
+		// run function on parent node (node that was clicked on)
+		switchStatements(element, "parent");
+	// end of function
+	return;
+}
 
-	// 	//-------------------------------------------------------------------//
-		// download everything in downloadArray
-		//downloadAllItems(0);
+// removes HTML comments and replaces non-breaking spaces with spaces
+function removeExtraJunk(node){
+		// remove HTML comments
+		node.innerHTML = node.innerHTML.replace(/<!--.*?-->/g, "");
+		// replace non-breaking spaces with spaces
+		node.innerHTML = node.innerHTML.replace(/&nbsp;/g, " ");
 }
 
 // creates '<p>' tag with innerHTML equal to 'string'
@@ -131,18 +158,11 @@ function createNewP(string) {
 
 // checks/handles element to make sure there is only one H1 header
 function VerifySingleH1(nodeArray) {
+	
 	let elArray = Array.prototype.slice.call(nodeArray);
-	elArray.unshift();
+	elArray.shift();
 	if (elArray.length > 0) 
 		swapElTypes(elArray, 'h2');
-}
-
-// cycle through all items with classes and remove the classes
-function removeAttribute(nodeArray, attrName) {
-	let elmArray = Array.prototype.slice.call(nodeArray);
-	for (let i = 0; i < elmArray.length; i++) {
-		elmArray[i].removeAttribute(attrName);
-	}
 }
 
 // handle found image element
@@ -157,32 +177,24 @@ function handleImageElement(element) {
 }
 
 // restructure all text that can be phone numbers into phone number links
-function restructureTele(nodeList) {
-	// list of telephone number 'nodes' that need "tel: " links
-	let teleNodeList = [];
-	for (let i = 0; i < nodeList.length; i++) {
+function restructureTele(node) {
 		// searches for phone number with various formats
-		if ((/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g).exec(nodeList[i].innerHTML)) {
+		if ((/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g).exec(node.innerHTML)) {
 			// add node to teleNodeList if innerHTMl doesn't have "tel:" link in it
-			if (nodeList[i].outerHTML.search("tel:") == -1) {
-				teleNodeList.push(nodeList[i]);
+			if (node.outerHTML.search("tel:") == -1) {
+				let updatedTeleLinkNodes = [];
+				updatedTeleLinkNodes = node.innerHTML.match(/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g);
+				for (let i = 0; i < updatedTeleLinkNodes.length; i++) {
+					// create anchor/link tag
+					let a = document.createElement("a");
+					a.href = "tel:" + updatedTeleLinkNodes[i].replace(/[\.\(\)\-]/g, "");
+					// populate anchor tag link area with new cleaned up number
+					a.innerHTML = updatedTeleLinkNodes[i];
+					// replace old node with newly made node with link
+					node.innerHTML = node.innerHTML.replace(updatedTeleLinkNodes[i], a.outerHTML);
+				}
 			}
 		}
-	}
-	// takes teleNodeList, strips each number of special characters, then creates a link for that node
-	for (let i = 0; i < teleNodeList.length; i++) {
-		let updatedTeleLinkNodes = [];
-		updatedTeleLinkNodes = teleNodeList[i].innerHTML.match(/\(?[[0-9]{3}[\.\-\)]{1}[0-9]{3}[\.\-]{1}[0-9]{4}/g);
-		for (let j = 0; j < updatedTeleLinkNodes.length; j++) {
-			// create anchor/link tag
-			let a = document.createElement("a");
-			a.href = "tel:" + updatedTeleLinkNodes[j].replace(/[\.\(\)\-]/g, "");
-			// populate anchor tag link area with new cleaned up number
-			a.innerHTML = updatedTeleLinkNodes[j];
-			// replace old node with newly made node with link
-			teleNodeList[i].innerHTML = teleNodeList[i].innerHTML.replace(updatedTeleLinkNodes[j], a.outerHTML);
-		}
-	}
 }
 
 // check if link is a useful link to process
