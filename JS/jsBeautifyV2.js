@@ -46,9 +46,9 @@ function reformatEverythingEverywhere(element) {
 	allElms.push(nodeElms, element);
 
 	// reformat items in list
-	nodeElms = switchStatements(allElms, element);
-	console.log("nodeElms before removeExtraJunk: ", nodeElms);
-	removeExtraJunk(nodeElms);
+	nodeElms = switchStatements(element, "children");
+	// console.log("nodeElms before removeExtraJunk: ", nodeElms);
+	removeExtraJunk(nodeElms, 0);
 }
 
 // general function to swap legacy/incorrect elements with appropriate element equivalent
@@ -60,9 +60,23 @@ function swapElTypes(listofElms, nameOfElm) {
 	}
 }
 
-function switchStatements(nodeList, element){
-	for (let i = 0; i < nodeList.length; i++){
+// goes through nodeList and reformats based on nodeName property
+function switchStatements(element, which){
+	let nodeList = null;
+	console.log("Element: ", element);
+
+	if (which === "children"){
+		nodeList = element.getElementsByTagName("*");
+	}
+	if (which === "parent") {
+		// element needs to be in a list, because 'element' is not a list and therefore doesn't have a length (needed to enter the for loop)
+		nodeList = [element];
+	}
+	console.log("nodeListNow: ", nodeList);
+	console.log("nodeListNow.type: ", typeof(nodeList));
 	
+	for (let i = 0; i < nodeList.length; i++){
+		console.log("nodeList: ", nodeList);
 		let nodeType = nodeList[i].nodeName;
 		switch(nodeType)
 		{
@@ -101,8 +115,8 @@ function switchStatements(nodeList, element){
 							nodesFragment.appendChild(tag);
 						}
 
-						let parentN3 = pNodeP.parentNode; 
-						parentN3.replaceChild(nodesFragment, pNodeP);
+						let parentP = pNodeP.parentNode; 
+						parentP.replaceChild(nodesFragment, pNodeP);
 						break;
 					}
 					if (pNodeP.children[x].nodeName == "SPAN"){
@@ -117,33 +131,43 @@ function switchStatements(nodeList, element){
 				handleLinkElement(nodeList[i]);
 				break;
 		}
-
-		nodeList = element.querySelectorAll("*");
 	}
 
-			// download everything in downloadArray
-		downloadAllItems(0);
-		return nodeList;
+	// download everything in downloadArray
+	downloadAllItems(0);
+	if (which === "children"){
+		switchStatements(element, "parent");
+	}
+	nodeList = element.getElementsByTagName("*");
+	console.log("finalNodeList: ", nodeList);
+	return nodeList;
 }
 
-function removeExtraJunk(allNodes){
-
-	// 	//-------------WAS INITIALLY "removeExtraNodes" function-------------//
-	for (let i = 0; i < allNodes.length; i++){
-			// remove HTML comments
-			allNodes[i].innerHTML = allNodes[i].innerHTML.replace(/<!--.*?-->/g, "");
-			// replace non-breaking spaces with spaces
-			allNodes[i].innerHTML = allNodes[i].innerHTML.replace(/&nbsp;/g, " ");
-			// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
-			let temp = allNodes[i].innerText.match(/[^\s\r\t\n]+/g);
-			
-			console.log("Temp is: ", temp);
-			// if no matches (no 'words') exist
-			if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
-				// console.log("TempLength is: ", temp.length);
-				allNodes[i].remove();
-			}
+function removeExtraJunk(allNodes, index){
+	
+	// console.log("allNodes BEFORE FUNCTION: ", allNodes);
+	for (let i = index; i < allNodes.length; i++){
+		// console.log("RemoveExtraJunk["+i+"]: ", allNodes[i]);
+		// remove HTML comments
+		allNodes[i].innerHTML = allNodes[i].innerHTML.replace(/<!--.*?-->/g, "");
+		// replace non-breaking spaces with spaces
+		allNodes[i].innerHTML = allNodes[i].innerHTML.replace(/&nbsp;/g, " ");
+		// get match list of words/numbers that are not spaces/carriage returns/tabs/new lines
+		let temp = allNodes[i].innerText.match(/[^\s\r\t\n]+/g);
+		
+		// console.log("TEMP["+i+"]: ", temp);
+		// console.log("AFTER: RemoveExtraJunk["+i+"].innerHTML: ", allNodes[i].innerHTML);
+		
+		// if no matches (no 'words') exist
+		if (temp === null || (temp.length == 1 && temp[0].length == 1)) {
+			allNodes[i].remove();
+			removeExtraJunk(allNodes, i);
+			return;
 		}
+		// console.log("allNodes NEW: ", allNodes);
+		
+	}
+	// console.log("allNodes AFTER FUNCTION: ", allNodes);
 	
 }
 
