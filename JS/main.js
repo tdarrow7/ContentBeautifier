@@ -6,7 +6,7 @@ let el = null,
     altIsPressed = false,
     ctrlIsPressed = false,
     highlighterButtons = null,
-    previewBox = document.createElement('div');
+    previewBox = document.createElement('div'),
     buttonDiv = document.createElement("div");
     
     document.body.appendChild(buttonDiv);
@@ -23,7 +23,7 @@ function addNavBar(){
 
     nav.append(navDiv);
     html.prepend(nav);
-    return [nav, navDiv]
+    return nav;
 }
 
 // creates and prepends a previewContainer to the HTML DOM
@@ -72,7 +72,7 @@ function getPosition(el) {
 
     checkScrollPositon(top, bodyRect.top * -1);
 
-    let arr = { height, width, left, top }
+    let arr = { height, width, left, top };
     return arr;
 }
 
@@ -100,13 +100,14 @@ function setMultipleAttributes(el, attrMap) {
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
 
+    console.log('tree.length: ' + tree.length)
     // if a tree already exists due to a previous click, call the clearNodeTree function
     if (tree.length > 0) clearNodeTree();
     else {
         highlighterButtons = addHighlighterButtons(buttonDiv);
 
-        html.prepend(nav);
-        nav.append(navDiv);
+        html.prepend(addNavBar());
+        // nav.append(navDiv);
         addButtonsIntoNav();
         addPreviewContainer();
     }
@@ -146,8 +147,8 @@ function removeMultipleAttributes(nodeArray, [attrNames]) {
 
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
-    navDiv.innerHTML = "";
     previewBox.innerHTML = "";
+    document.querySelector('.nav-div').innerHTML = '';
     for (let i = 0; i < tree.length; i++) {
         tree[i].removeAttribute("data-cbnode");
         tree[i].removeAttribute("style");
@@ -160,7 +161,8 @@ function clearNodeTree() {
 
 // function that builds navigable representation of tree
 function createRepresentationOfTree() {
-    let indent = 0;
+    let indent = 0,
+        navContainer = document.querySelector('.nav-div');
 
     for (let i = tree.length - 1; i >= 0; i--) {
         let link = document.createElement("a");
@@ -172,7 +174,7 @@ function createRepresentationOfTree() {
         });
         link.innerText = "<" + tree[i].nodeName.toString().toLowerCase() + ">";
         if (i == 0) link.classList.add("active");
-        navContainers[1].append(link);
+        navContainer.append(link);
         indent += 0.2;
     }
 }
