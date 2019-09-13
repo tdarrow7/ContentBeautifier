@@ -5,35 +5,58 @@ let el = null,
     nav = document.createElement("nav"),
     navDiv = document.createElement("div"),
     html = document.querySelector("html"),
-    divContainer = document.createElement("div"),
-    preview = document.createElement("div"),
-    close = document.createElement("a"),
-    span = document.createElement("span"),
+    altIsPressed = false,
     ctrlIsPressed = false,
-    buttonDiv = document.createElement("div"),
-    previewButton = document.createElement("a"),
+    highlighterButtons = null,
+    previewButtons = null,
+    buttonDiv = document.createElement("div");
+    
+    document.body.appendChild(buttonDiv);
+    
+    setMultipleAttributes(nav, { "data-nav": "", class: "data-nav" });
+    setMultipleAttributes(navDiv, { "nav-div": "", class: "nav-div" });
+    
+// creates and prepends a previewContainer to the HTML DOM
+// returns [divContainer, preview, span] nodes if used elsewhere
+function addPreviewContainer(copyButton){
+    let divContainer = document.createElement("div"),
+    preview = document.createElement("div"),
+    span = document.createElement("span");
+
+    // sets attributes for divContainer, preview, and span elements
+    setMultipleAttributes(divContainer, { "previewContainer": "", class: "previewContainer" });
+    setMultipleAttributes(preview, { "previewBox": "", class: "previewBox" });
+    setMultipleAttributes(span, { "previewClose": "", class: "previewClose" });
+    
+    // appends elements to divContainer
+    divContainer.append(span);
+    divContainer.append(preview);
+    divContainer.append(copyButton.cloneNode(true));
+
+    // prepends divContainer to HTML
+    html.prepend(divContainer);
+    return [divContainer, preview, span]
+    
+}
+
+// creates and appends Highlighter "preview" and "copy" to "buttonDiv"
+// returns [buttonDiv, previewButton, copyButton] nodes if used elsewhere
+function addHighlighterButtons(buttonDiv){
+    if (buttonDiv.innerHTML == ""){
+    let previewButton = document.createElement("a"),
     copyButton = document.createElement("a");
-
-setMultipleAttributes(nav, { "data-nav": "", class: "data-nav" });
-setMultipleAttributes(navDiv, { "nav-div": "", class: "nav-div" });
-setMultipleAttributes(preview, { "previewBox": "", class: "previewBox" });
-setMultipleAttributes(divContainer, { "previewContainer": "", class: "previewContainer" });
-setMultipleAttributes(span, { "previewClose": "", class: "previewClose" });
-setMultipleAttributes(close, { "previewClose": "", class: "previewClose" });
-copyButton.setAttribute("class", "cb-btn v2 copy");
-previewButton.setAttribute("class", "cb-btn v1 preview");
-
-previewButton.innerText = "Preview";
-copyButton.innerText = "Copy";
-
-buttonDiv.appendChild(previewButton);
-buttonDiv.appendChild(copyButton);
-document.body.appendChild(buttonDiv);
-
-span.append(close);
-divContainer.append(span);
-divContainer.append(preview);
-divContainer.append(copyButton.cloneNode(true));
+    
+    copyButton.setAttribute("class", "cb-btn v2 copy");
+    previewButton.setAttribute("class", "cb-btn v1 preview");
+    
+    previewButton.innerText = "Preview";
+    copyButton.innerText = "Copy";
+    
+    buttonDiv.appendChild(previewButton);
+    buttonDiv.appendChild(copyButton);
+    return [buttonDiv, previewButton, copyButton];
+    }
+}
 
 function changePosition(el) {
     var arr = getPosition(el);
@@ -78,13 +101,20 @@ function setMultipleAttributes(el, attrMap) {
 
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
+    
+
     // if a tree already exists due to a previous click, call the clearNodeTree function
     if (tree.length > 0) clearNodeTree();
     else {
+        // listOfButtons = [buttonDiv, previewButton, copyButton] nodes
+        // if there is a need to refer to a Node for other uses
+        highlighterButtons = addHighlighterButtons(buttonDiv);
         html.prepend(nav);
         nav.append(navDiv);
         addNavButton();
-        html.prepend(divContainer);
+        // highlighterButtons[2] = copyButton from 'addHighlighterButtons' function above
+        // previewButtons = [divContainer, preview, span] nodes
+        previewButtons = addPreviewContainer(highlighterButtons[2]);
     }
 
     window.getComputedStyle(html);
@@ -123,7 +153,8 @@ function removeMultipleAttributes(nodeArray, [attrNames]) {
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
     navDiv.innerHTML = "";
-    preview.innerHTML = "";
+    // previewButtons[1] = preview Node
+    previewButtons[1].innerHTML = "";
     for (let i = 0; i < tree.length; i++) {
         tree[i].removeAttribute("data-cbnode");
         tree[i].removeAttribute("style");
@@ -169,6 +200,7 @@ function moveCopyAttribute(el) {
 
 // when window is inactive/out of focus
 window.addEventListener("blur", () => {
+    altIsPressed = false;
     ctrlIsPressed = false;
 });
 
@@ -181,14 +213,13 @@ window.addEventListener("click", () => {
         && !event.target.parentNode.hasAttribute("nav-div")
         && !event.target.hasAttribute("data-cbspecial")
     )
-        if (ctrlIsPressed) {
-            findNodeTree(event);
-            resetDownloadErrorArrays();
-        }
-    if (event.target.hasAttribute("data-findnode")) {
-        moveCopyAttribute(event.target);
+    if (altIsPressed){
+        findNodeTree(event);
         resetDownloadErrorArrays();
     }
+    if (event.target.hasAttribute("data-findnode"))
+        moveCopyAttribute(event.target);
+        resetDownloadErrorArrays();
     if (event.target.classList.contains('preview')) {
         clearPreview();
         fillPreview();
@@ -206,10 +237,11 @@ window.addEventListener("click", () => {
 document.onkeydown = function (e) {
     e = e || window.event;
     let code = e.code.toString();
-    if (code == 'ControlLeft' || code == 'ControlRight'){
+    if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = true;
-        
-    }
+    if (code == 'AltLeft' || code == 'AltRight')
+        altIsPressed = true;
+    
     // Esc is pressed
 
     if (e.code.toString() == "Escape"){
@@ -239,6 +271,8 @@ document.onkeyup = function (e) {
     let code = e.code.toString();
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = false;
+    if (code == 'AltLeft' || code == 'AltRight')
+        altIsPressed = false;
 }
 
 function copyFunction(){
@@ -254,14 +288,14 @@ function copyFunction(){
         // copy contents to clipboard
         if (document.body.createTextRange){
             range = document.body.createTextRange();
-            range.moveToElementText(preview.firstChild);
+            range.moveToElementText(previewButtons[1].firstChild);
             range.select();
             document.execCommand('copy');
         }
         else if (window.getSelection){
             selection = window.getSelection();
             range = document.createRange();
-            range.selectNodeContents(preview.firstChild);
+            range.selectNodeContents(previewButtons[1].firstChild);
             selection.removeAllRanges();
             selection.addRange(range);
             document.execCommand('copy');
@@ -275,12 +309,12 @@ function copyFunction(){
 }
 // Start of PreviewBox Manipulation Functions
 function clearPreview(){
-    preview.innerHTML = "";
+    previewButtons[1].innerHTML = "";
 }
 
 function fillPreview(){
     let temp = document.querySelector('[data-cbcopy="true"]').cloneNode(true);
-    preview.appendChild(temp);
+    previewButtons[1].appendChild(temp);
     resetDownloadErrorArrays();
     reformatEverythingEverywhere(temp);
 }
