@@ -8,7 +8,6 @@ let el = null,
     altIsPressed = false,
     ctrlIsPressed = false,
     highlighterButtons = null,
-    previewButtons = null,
     previewBox = document.createElement('div');
     buttonDiv = document.createElement("div");
     
@@ -19,7 +18,7 @@ let el = null,
     
 // creates and prepends a previewContainer to the HTML DOM
 // returns [divContainer, preview, span] nodes if used elsewhere
-function addPreviewContainer(copyButton){
+function addPreviewContainer(){
     let previewContainer = document.createElement("div"),
     span = document.createElement("span");
 
@@ -31,11 +30,10 @@ function addPreviewContainer(copyButton){
     // appends elements to previewContainer
     previewContainer.append(span);
     previewContainer.append(previewBox);
-    previewContainer.append(copyButton.cloneNode(true));
+    previewContainer.append(createCopyButton());
 
     // prepends previewContainer to HTML
     html.prepend(previewContainer);
-    return previewContainer;
 }
 
 // creates and appends Highlighter "preview" and "copy" to "buttonDiv"
@@ -101,7 +99,7 @@ function findNodeTree(event) {
         html.prepend(nav);
         nav.append(navDiv);
         addButtonsIntoNav();
-        previewButtons = addPreviewContainer(createCopyButton());
+        addPreviewContainer();
     }
 
     window.getComputedStyle(html);
@@ -199,25 +197,20 @@ window.addEventListener("click", () => {
         && !event.target.parentNode.hasAttribute("nav-div")
         && !event.target.hasAttribute("data-cbspecial")
     )
-    if (altIsPressed){
+    if (altIsPressed)
         findNodeTree(event);
-        resetDownloadErrorArrays();
-    }
     if (event.target.hasAttribute("data-findnode"))
         moveCopyAttribute(event.target);
-        resetDownloadErrorArrays();
     if (event.target.classList.contains('preview')) {
         clearPreview();
         fillPreview();
 
         html.classList.add("previewClicked");
     }
-    if (event.target.classList.contains('copy')) {
+    if (event.target.classList.contains('copy'))
         copyFunction();
-    }
-    if (event.target.classList.contains('previewContainer') || event.target.classList.contains('previewClose')) {
+    if (event.target.classList.contains('previewContainer') || event.target.classList.contains('previewClose'))
         html.classList.remove("previewClicked");
-    }
 });
 
 document.onkeydown = function (e) {
@@ -282,7 +275,8 @@ function copyFunction(){
             selection.removeAllRanges();
             selection.addRange(range);
             document.execCommand('copy');
-            downloadAllItems(0);
+            console.log('downloadArray: ' + downloadArray);
+            downloadAllItems(downloadArray.length - 1);
         }
         else
         alert('Copy Unsuccessful');
