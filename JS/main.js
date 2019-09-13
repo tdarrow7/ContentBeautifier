@@ -358,7 +358,7 @@ function copySwitch(){
         allCopy[i].innerHTML = "Copied";
     }
     setTimeout(function copiedToCopy(){
-        let allCopied = docume nt.querySelectorAll("a.copy");
+        let allCopied = document.querySelectorAll("a.copy");
         for (let i = 0; i < allCopied.length; i++){
             allCopied[i].innerHTML = "Copy";
         }
