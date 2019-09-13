@@ -214,10 +214,11 @@ function checkExtensions(src) {
 
 // recursively download all items from array
 function downloadAllItems(i) {
-	if (i < downloadArray.length) {
+	// console.log('in if: downloading item ' + i);
+	if (i >= 0) {
 		setTimeout(function () {
 			downloadElement(downloadArray[i]);
-			i++;
+			i--;
 			downloadAllItems(i);
 		}, 100);
 	}
@@ -225,6 +226,7 @@ function downloadAllItems(i) {
 
 // download element
 function downloadElement(el) {
+	// console.log('el: ' + el);
 	let fullPath = (el[0].includes('?') ? el.split('?')[0] : el[0]),
 		fileName = fullPath.replace(/^.*[\\\/]/, ''),
 		fileParts = fileName.split('.');
