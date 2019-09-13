@@ -2,8 +2,6 @@
 let el = null,
     parentEl = null,
     tree = [],
-    nav = document.createElement("nav"),
-    navDiv = document.createElement("div"),
     html = document.querySelector("html"),
     altIsPressed = false,
     ctrlIsPressed = false,
@@ -13,9 +11,21 @@ let el = null,
     
     document.body.appendChild(buttonDiv);
     
+    
+// creates and prepends a nav to the HTML DOM
+// return [nav, navDiv] nodes if used elsewhere
+function addNavBar(){
+    let nav = document.createElement("nav"),
+        navDiv = document.createElement("div");
+        
     setMultipleAttributes(nav, { "data-nav": "", class: "data-nav" });
     setMultipleAttributes(navDiv, { "nav-div": "", class: "nav-div" });
-    
+
+    nav.append(navDiv);
+    html.prepend(nav);
+    return [nav, navDiv]
+}
+
 // creates and prepends a previewContainer to the HTML DOM
 // returns [divContainer, preview, span] nodes if used elsewhere
 function addPreviewContainer(){
@@ -89,7 +99,6 @@ function setMultipleAttributes(el, attrMap) {
 
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
-    
 
     // if a tree already exists due to a previous click, call the clearNodeTree function
     if (tree.length > 0) clearNodeTree();
@@ -163,7 +172,7 @@ function createRepresentationOfTree() {
         });
         link.innerText = "<" + tree[i].nodeName.toString().toLowerCase() + ">";
         if (i == 0) link.classList.add("active");
-        navDiv.append(link);
+        navContainers[1].append(link);
         indent += 0.2;
     }
 }
