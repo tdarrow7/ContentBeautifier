@@ -9,6 +9,7 @@ let el = null,
     ctrlIsPressed = false,
     highlighterButtons = null,
     previewButtons = null,
+    previewBox = document.createElement('div');
     buttonDiv = document.createElement("div");
     
     document.body.appendChild(buttonDiv);
@@ -19,42 +20,31 @@ let el = null,
 // creates and prepends a previewContainer to the HTML DOM
 // returns [divContainer, preview, span] nodes if used elsewhere
 function addPreviewContainer(copyButton){
-    let divContainer = document.createElement("div"),
-    preview = document.createElement("div"),
+    let previewContainer = document.createElement("div"),
     span = document.createElement("span");
 
-    // sets attributes for divContainer, preview, and span elements
-    setMultipleAttributes(divContainer, { "previewContainer": "", class: "previewContainer" });
-    setMultipleAttributes(preview, { "previewBox": "", class: "previewBox" });
+    // sets attributes for previewContainer, previewBox, and span elements
+    setMultipleAttributes(previewContainer, { "previewContainer": "", class: "previewContainer" });
+    setMultipleAttributes(previewBox, { "previewBox": "", class: "previewBox" });
     setMultipleAttributes(span, { "previewClose": "", class: "previewClose" });
     
-    // appends elements to divContainer
-    divContainer.append(span);
-    divContainer.append(preview);
-    divContainer.append(copyButton.cloneNode(true));
+    // appends elements to previewContainer
+    previewContainer.append(span);
+    previewContainer.append(previewBox);
+    previewContainer.append(copyButton.cloneNode(true));
 
-    // prepends divContainer to HTML
-    html.prepend(divContainer);
-    return [divContainer, preview, span]
-    
+    // prepends previewContainer to HTML
+    html.prepend(previewContainer);
+    return previewContainer;
 }
 
 // creates and appends Highlighter "preview" and "copy" to "buttonDiv"
 // returns [buttonDiv, previewButton, copyButton] nodes if used elsewhere
 function addHighlighterButtons(buttonDiv){
     if (buttonDiv.innerHTML == ""){
-    let previewButton = document.createElement("a"),
-    copyButton = document.createElement("a");
-    
-    copyButton.setAttribute("class", "cb-btn v2 copy");
-    previewButton.setAttribute("class", "cb-btn v1 preview");
-    
-    previewButton.innerText = "Preview";
-    copyButton.innerText = "Copy";
-    
-    buttonDiv.appendChild(previewButton);
-    buttonDiv.appendChild(copyButton);
-    return [buttonDiv, previewButton, copyButton];
+        buttonDiv.appendChild(createPreviewButton());
+        buttonDiv.appendChild(createCopyButton());
+        return buttonDiv;
     }
 }
 
@@ -106,15 +96,12 @@ function findNodeTree(event) {
     // if a tree already exists due to a previous click, call the clearNodeTree function
     if (tree.length > 0) clearNodeTree();
     else {
-        // listOfButtons = [buttonDiv, previewButton, copyButton] nodes
-        // if there is a need to refer to a Node for other uses
         highlighterButtons = addHighlighterButtons(buttonDiv);
+
         html.prepend(nav);
         nav.append(navDiv);
-        addNavButton();
-        // highlighterButtons[2] = copyButton from 'addHighlighterButtons' function above
-        // previewButtons = [divContainer, preview, span] nodes
-        previewButtons = addPreviewContainer(highlighterButtons[2]);
+        addButtonsIntoNav();
+        previewButtons = addPreviewContainer(createCopyButton());
     }
 
     window.getComputedStyle(html);
@@ -153,8 +140,7 @@ function removeMultipleAttributes(nodeArray, [attrNames]) {
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
     navDiv.innerHTML = "";
-    // previewButtons[1] = preview Node
-    previewButtons[1].innerHTML = "";
+    previewBox.innerHTML = "";
     for (let i = 0; i < tree.length; i++) {
         tree[i].removeAttribute("data-cbnode");
         tree[i].removeAttribute("style");
@@ -245,9 +231,8 @@ document.onkeydown = function (e) {
     // Esc is pressed
 
     if (e.code.toString() == "Escape"){
-        if (html.classList.contains("previewClicked")){
+        if (html.classList.contains("previewClicked"))
             html.classList.remove("previewClicked");
-        }
         else {
             document.querySelector("div.highlighter").setAttribute("style", "");
             document.querySelector("div.btn-container").setAttribute("style", "");
@@ -258,12 +243,9 @@ document.onkeydown = function (e) {
             clearNodeTree();
         }
     }
-    if (ctrlIsPressed){
+    if (ctrlIsPressed && e.code.toString() == "KeyC")
         // Ctrl + C
-        if (e.code.toString() == "KeyC"){
-            copyFunction();
-        }
-    }
+        copyFunction();
 }
 
 document.onkeyup = function (e) {
@@ -278,7 +260,8 @@ document.onkeyup = function (e) {
 function copyFunction(){
 
     // checks to see if extension is enabled
-    let nodeCheck = document.querySelector('[data-cbcopy="true"]');
+    let nodeCheck = document.querySelector('[data-cbcopy="true"]'),
+        previewBox = document.querySelector('.previewBox');
     if (nodeCheck){
 
         copySwitch();
@@ -288,33 +271,31 @@ function copyFunction(){
         // copy contents to clipboard
         if (document.body.createTextRange){
             range = document.body.createTextRange();
-            range.moveToElementText(previewButtons[1].firstChild);
+            range.moveToElementText(previewBox.firstChild);
             range.select();
             document.execCommand('copy');
         }
         else if (window.getSelection){
             selection = window.getSelection();
             range = document.createRange();
-            range.selectNodeContents(previewButtons[1].firstChild);
+            range.selectNodeContents(previewBox.firstChild);
             selection.removeAllRanges();
             selection.addRange(range);
             document.execCommand('copy');
             downloadAllItems(0);
         }
-        else {
+        else
         alert('Copy Unsuccessful');
-        }
     }
-
 }
 // Start of PreviewBox Manipulation Functions
 function clearPreview(){
-    previewButtons[1].innerHTML = "";
+    previewBox.innerHTML = "";
 }
 
 function fillPreview(){
     let temp = document.querySelector('[data-cbcopy="true"]').cloneNode(true);
-    previewButtons[1].appendChild(temp);
+    previewBox.appendChild(temp);
     resetDownloadErrorArrays();
     reformatEverythingEverywhere(temp);
 }
@@ -333,8 +314,7 @@ function changePageButtonPosition(arr) {
         class: "btn-container",
         "data-cbcopy": "single",
         style: styleString
-    })
-
+    });
 }
 
 function copySwitch(){
@@ -352,21 +332,38 @@ function copySwitch(){
 
 
 
-function addNavButton() {
+function addButtonsIntoNav() {
     let navButtonDiv = document.createElement("div"),
-        dataNav = document.querySelector(".data-nav"),
-        navPreviewButton = document.createElement("a"),
-        navCopyButton = document.createElement("a");
+        dataNav = document.querySelector(".data-nav");
 
-    navPreviewButton.innerText = "Preview";
-    navCopyButton.innerText = "Copy";
-
-    navPreviewButton.setAttribute("class", "cb-btn v1 preview");
-    navCopyButton.setAttribute("class", "cb-btn v2 copy");
     navButtonDiv.setAttribute("class", "nav-btn-container");
 
-    navButtonDiv.appendChild(navPreviewButton);
-    navButtonDiv.appendChild(navCopyButton);
+    // add copy and preview buttons
+    navButtonDiv.appendChild(createPreviewButton());
+    navButtonDiv.appendChild(createCopyButton());
 
     dataNav.appendChild(navButtonDiv);
+}
+
+
+function createCopyButton() {
+    let button = document.createElement("a");
+    setMultipleAttributes(button, {
+        class: 'cb-btn v1 copy',
+        "data-cb-copy": 'single',
+        href: 'javascript:void(0)'
+    });
+    button.innerText = 'Copy';
+    return button;
+}
+
+function createPreviewButton() {
+    let button = document.createElement("a");
+    setMultipleAttributes(button, {
+        class: 'cb-btn v2 preview',
+        "data-cb-copy": 'single',
+        href: 'javascript:void(0)'
+    });
+    button.innerText = 'Preview';
+    return button;
 }
