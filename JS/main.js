@@ -2,20 +2,31 @@
 let el = null,
     parentEl = null,
     tree = [],
-    nav = document.createElement("nav"),
-    navDiv = document.createElement("div"),
     html = document.querySelector("html"),
     altIsPressed = false,
     ctrlIsPressed = false,
     highlighterButtons = null,
     previewButtons = null,
+    navContainers = null,
     buttonDiv = document.createElement("div");
     
     document.body.appendChild(buttonDiv);
     
+    
+// creates and prepends a nav to the HTML DOM
+// return [nav, navDiv] nodes if used elsewhere
+function addNavBar(){
+    let nav = document.createElement("nav"),
+        navDiv = document.createElement("div");
+        
     setMultipleAttributes(nav, { "data-nav": "", class: "data-nav" });
     setMultipleAttributes(navDiv, { "nav-div": "", class: "nav-div" });
-    
+
+    nav.append(navDiv);
+    html.prepend(nav);
+    return [nav, navDiv]
+}
+
 // creates and prepends a previewContainer to the HTML DOM
 // returns [divContainer, preview, span] nodes if used elsewhere
 function addPreviewContainer(copyButton){
@@ -43,18 +54,18 @@ function addPreviewContainer(copyButton){
 // returns [buttonDiv, previewButton, copyButton] nodes if used elsewhere
 function addHighlighterButtons(buttonDiv){
     if (buttonDiv.innerHTML == ""){
-    let previewButton = document.createElement("a"),
-    copyButton = document.createElement("a");
-    
-    copyButton.setAttribute("class", "cb-btn v2 copy");
-    previewButton.setAttribute("class", "cb-btn v1 preview");
-    
-    previewButton.innerText = "Preview";
-    copyButton.innerText = "Copy";
-    
-    buttonDiv.appendChild(previewButton);
-    buttonDiv.appendChild(copyButton);
-    return [buttonDiv, previewButton, copyButton];
+        let previewButton = document.createElement("a"),
+        copyButton = document.createElement("a");
+        
+        copyButton.setAttribute("class", "cb-btn v2 copy");
+        previewButton.setAttribute("class", "cb-btn v1 preview");
+        
+        previewButton.innerText = "Preview";
+        copyButton.innerText = "Copy";
+        
+        buttonDiv.appendChild(previewButton);
+        buttonDiv.appendChild(copyButton);
+        return [buttonDiv, previewButton, copyButton];
     }
 }
 
@@ -101,19 +112,22 @@ function setMultipleAttributes(el, attrMap) {
 
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
-    
 
     // if a tree already exists due to a previous click, call the clearNodeTree function
     if (tree.length > 0) clearNodeTree();
-    else {
-        // listOfButtons = [buttonDiv, previewButton, copyButton] nodes
+    else { 
+        // highlighterButtons = [buttonDiv, previewButton, copyButton] nodes
         // if there is a need to refer to a Node for other uses
         highlighterButtons = addHighlighterButtons(buttonDiv);
-        html.prepend(nav);
-        nav.append(navDiv);
-        addNavButton();
-        // highlighterButtons[2] = copyButton from 'addHighlighterButtons' function above
+
+        // navContainers = [nav, navDiv] nodes
+        // if there is a need to refer to a Node for other uses
+        navContainers = addNavBar();
+
+        addNavButtons();
+        
         // previewButtons = [divContainer, preview, span] nodes
+        // if there is a need to refer to a Node for other uses
         previewButtons = addPreviewContainer(highlighterButtons[2]);
     }
 
@@ -152,7 +166,7 @@ function removeMultipleAttributes(nodeArray, [attrNames]) {
 
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
-    navDiv.innerHTML = "";
+    navContainers[1].innerHTML = "";
     // previewButtons[1] = preview Node
     previewButtons[1].innerHTML = "";
     for (let i = 0; i < tree.length; i++) {
@@ -179,7 +193,7 @@ function createRepresentationOfTree() {
         });
         link.innerText = "<" + tree[i].nodeName.toString().toLowerCase() + ">";
         if (i == 0) link.classList.add("active");
-        navDiv.append(link);
+        navContainers[1].append(link);
         indent += 0.2;
     }
 }
@@ -212,10 +226,11 @@ window.addEventListener("click", () => {
         && !event.target.hasAttribute("data-nav")
         && !event.target.parentNode.hasAttribute("nav-div")
         && !event.target.hasAttribute("data-cbspecial")
-    )
-    if (altIsPressed){
-        findNodeTree(event);
-        resetDownloadErrorArrays();
+    ){
+        if (altIsPressed){
+            findNodeTree(event);
+            resetDownloadErrorArrays();
+        }
     }
     if (event.target.hasAttribute("data-findnode"))
         moveCopyAttribute(event.target);
@@ -343,7 +358,7 @@ function copySwitch(){
         allCopy[i].innerHTML = "Copied";
     }
     setTimeout(function copiedToCopy(){
-        let allCopied = document.querySelectorAll("a.copy");
+        let allCopied = docume nt.querySelectorAll("a.copy");
         for (let i = 0; i < allCopied.length; i++){
             allCopied[i].innerHTML = "Copy";
         }
@@ -352,7 +367,7 @@ function copySwitch(){
 
 
 
-function addNavButton() {
+function addNavButtons() {
     let navButtonDiv = document.createElement("div"),
         dataNav = document.querySelector(".data-nav"),
         navPreviewButton = document.createElement("a"),
