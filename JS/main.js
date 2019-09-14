@@ -5,11 +5,14 @@ let el = null,
     html = document.querySelector("html"),
     altIsPressed = false,
     ctrlIsPressed = false,
-    highlighterButtons = null,
+    // highlighterButtons = null,
     previewBox = document.createElement('div'),
-    buttonDiv = document.createElement("div");
+    buttonDiv = document.createElement("div"),
+    highlight = document.createElement("div"),
+    hoverHighlight = document.createElement("div");
     
     document.body.appendChild(buttonDiv);
+    document.body.appendChild(highlight);
     
     
 // creates and prepends a nav to the HTML DOM
@@ -29,6 +32,8 @@ function addNavBar(){
 // creates and prepends a previewContainer to the HTML DOM
 // returns [divContainer, preview, span] nodes if used elsewhere
 function addPreviewContainer(){
+    // verify that previewContainer doesn't exist before building a new one.
+    if (document.querySelector('.previewContainer') != null) return;
     let previewContainer = document.createElement("div"),
     span = document.createElement("span");
 
@@ -100,11 +105,10 @@ function setMultipleAttributes(el, attrMap) {
 // Declare function that builds a new node tree based on what you clicked on.
 function findNodeTree(event) {
 
-    console.log('tree.length: ' + tree.length)
     // if a tree already exists due to a previous click, call the clearNodeTree function
     if (tree.length > 0) clearNodeTree();
     else {
-        highlighterButtons = addHighlighterButtons(buttonDiv);
+        // highlighterButtons = addHighlighterButtons(buttonDiv);
 
         html.prepend(addNavBar());
         // nav.append(navDiv);
@@ -148,7 +152,8 @@ function removeMultipleAttributes(nodeArray, [attrNames]) {
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function clearNodeTree() {
     previewBox.innerHTML = "";
-    document.querySelector('.nav-div').innerHTML = '';
+    if (doesElementExist('.nav-div'))
+        document.querySelector('.nav-div').innerHTML = '';
     for (let i = 0; i < tree.length; i++) {
         tree[i].removeAttribute("data-cbnode");
         tree[i].removeAttribute("style");
@@ -242,8 +247,9 @@ document.onkeydown = function (e) {
             document.querySelector("div.btn-container").setAttribute("style", "");
 
             // reset innerHTML, prevent addition of extra elements on rebuild 
-            document.querySelector("nav.data-nav").innerHTML = "";
-            document.querySelector("nav.data-nav").remove();
+            // document.querySelector("nav.data-nav").innerHTML = "";
+            if (doesElementExist('nav.data-nav'))
+                document.querySelector("nav.data-nav").remove();
             clearNodeTree();
         }
     }
@@ -286,7 +292,6 @@ function copyFunction(){
             selection.removeAllRanges();
             selection.addRange(range);
             document.execCommand('copy');
-            console.log('downloadArray: ' + downloadArray);
             downloadAllItems(downloadArray.length - 1);
         }
         else
@@ -372,3 +377,29 @@ function createPreviewButton() {
     button.innerText = 'Preview';
     return button;
 }
+
+function doesElementExist(query) {
+    let el = document.querySelector(query);
+    return (el != null) ? true : false;
+}
+
+function changeHighlightPosition(arr) {
+  let { height, width, left, top } = arr;
+  var styleString =
+    "visibility: visible !important; opacity: 1 !important; height: " +
+    (height + 4) +
+    "px; width: " +
+    (width + 4) +
+    "px; left: " +
+    (left - 2) +
+    "px; top: " +
+    (top - 2) +
+    "px";
+
+  setMultipleAttributes(highlight, {
+    class: "highlighter",
+    style: styleString,
+    "data-cbspecial": ""
+  })
+}
+

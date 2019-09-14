@@ -12,9 +12,7 @@
                 "<all_urls>"
             ],
             "css": [
-                "css/highlighter.css",
-                "css/button.css",
-                "css/reset.css"
+                "css/highlighter.css"
             ],
             "js": [
                 "js/main.js",
