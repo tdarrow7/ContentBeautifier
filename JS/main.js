@@ -6,6 +6,7 @@ let el = null,
     altIsPressed = false,
     ctrlIsPressed = false,
     cbExists = false,
+    canCreateCB = false,
     previewContainer = null,
     elementHighlighter = null,
     hoverHighlighter = null,
@@ -22,7 +23,6 @@ function getPositionOfElement(el) {
         left = elemRect.left - bodyRect.left;
 
     coordinates = { height, width, left, top };
-    console.log('coordinate array within getPosition: ' + coordinates);
 }
 
 function moveHighlightAndButtons() {
@@ -372,7 +372,7 @@ function destroyVirtualDom() {
 // listen for click events in the window. On click, call buildnodeTree function
 window.addEventListener("click", () => {
 
-    if (!event.target.parentNode.hasAttribute("data-cbspecial") && altIsPressed) {
+    if (!event.target.parentNode.hasAttribute("data-cbspecial") && altIsPressed && canCreateCB) {
         // check if content beautifier is already running
         if (!cbExists)
             createBeautifierElements();
@@ -427,3 +427,22 @@ document.onkeyup = function (e) {
     if (code == 'AltLeft' || code == 'AltRight')
         altIsPressed = false;
 }
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+      console.log(sender.tab ?
+                  "from a content script:" + sender.tab.url :
+                  "from the extension");
+      if (request.command == "off") {
+        console.log('destroying content beautifier');
+          sendResponse({message: "destroyed"});
+          canCreateCB = false;
+      }
+
+      if (request.command == "on") {
+        console.log('can create content beautifier');
+          sendResponse({message: "ready to create"});
+          canCreateCB = true;
+      }
+
+    });

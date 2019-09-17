@@ -18,7 +18,6 @@
                 "js/main.js",
                 "js/highlighter.js",
                 "js/jsBeautifyV2.js",
-                "js/popup.js",
                 "js/download.js"
             ]
         }
