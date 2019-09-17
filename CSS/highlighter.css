@@ -76,6 +76,17 @@
     margin: 0 0.5em;
   }
 
+  .data-nav .btn-container {
+    opacity: 0;
+    transition: opacity .1s ease 0s;
+    margin-top: 2em;
+  }
+
+  .data-nav:hover .btn-container {
+    opacity: 1;
+    transition: opacity .6s ease .3s;
+  }
+
   /* End Data-Nav */
 
   /* Preview Box */
@@ -239,28 +250,13 @@
     z-index: 1;
   }
   
-  body .btn-container {
+  .btn-container.highlighter-btns {
     position: absolute !important;
     transition: 0.15s !important;
   }
 
   .btn-container .cb-btn:first-child {
     margin-right:.5em;
-  }
-
-  .nav-btn-container {
-    opacity: 0;
-    transition: opacity .1s ease;
-    margin-top: 2em;
-  }
-
-  .nav-btn-container .cb-btn:first-child {
-    margin-right:.5em;
-  }
-
-  .data-nav:hover .nav-btn-container {
-    opacity: 1;
-    transition: opacity .6s ease .3s;
   }
   
   .cb-btn {

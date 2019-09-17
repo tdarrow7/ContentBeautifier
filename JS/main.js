@@ -13,10 +13,6 @@ let el = null,
     navBar = null,
     coordinates = [];
 
-    
-    // document.body.appendChild(buttonDiv);
-    // document.body.appendChild(highlight);
-
 function getPositionOfElement(el) {
     let bodyRect = document.body.getBoundingClientRect(),
         elemRect = el.getBoundingClientRect(),
@@ -28,13 +24,13 @@ function getPositionOfElement(el) {
     coordinates = { height, width, left, top };
 }
 
-function moveHighlightAndButtons(arr) {
-    changeElementHighlightPosition(elementHighlighter, arr);
-    updateButtonPosition(arr);
+function moveHighlightAndButtons() {
+    changeElementHighlightPosition(elementHighlighter);
+    updateButtonPosition();
 }
 
-function updateButtonPosition(arr) {
-    let { height, width, left, top } = arr;
+function updateButtonPosition() {
+    let { height, width, left, top } = coordinates;
     var styleString =
         "visibility: visible !important; opacity: 1 !important; top: " +
         (top + height + 10) +
@@ -83,8 +79,7 @@ function buildnodeTree(event) {
     });
     tree.push(el);
     getPositionOfElement(el);
-    moveHighlightAndButtons(coordinates);
-    updateButtonPosition(coordinates);
+    moveHighlightAndButtons();
     checkIfScrollingIsNeeded();
     while (parentEl && parentEl.nodeName != "#document") {
         parentEl.setAttribute('data-cbnode', tree.length);
@@ -100,9 +95,7 @@ function buildnodeTree(event) {
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
 function refreshDomAndPreview() {
     console.log('within refreshDomAndPreview()')
-    const previewBox = document.querySelector('.previewBox'),
-        navDiv = document.querySelector('.data-nav .nav-div');
-    previewBox.innerHTML = "";
+    const navDiv = document.querySelector('.data-nav .nav-div');
     navDiv.innerHTML = '';
     for (let i = 0; i < tree.length; i++) {
         removeMultipleAttributes(tree[i],['data-cbnode', 'style'])
@@ -160,7 +153,8 @@ function moveCopyAttribute(el) {
     removecopy.classList.remove("active");
     let newNode = document.querySelector('[data-cbnode="' + cnodeval + '"]');
     newNode.setAttribute("data-cbcopy", "true");
-    moveHighlightAndButtons(newNode);
+    getPositionOfElement(newNode);
+    moveHighlightAndButtons();
 }
 
 function copyFunction(){
@@ -226,8 +220,8 @@ function doesElementExist(query) {
     return (el != null) ? true : false;
 }
 
-function changeElementHighlightPosition(highlighter, arr) {
-  let { height, width, left, top } = arr;
+function changeElementHighlightPosition(highlighter) {
+  let { height, width, left, top } = coordinates;
   var styleString =
     "visibility: visible !important; opacity: 1 !important; height: " +
     (height + 4) +
@@ -258,6 +252,7 @@ function createHighlighters() {
     hoverHighlighter.classList.add('hover');
     highlighterButtons = createButtonModule();
     highlighterButtons.classList.add('highlighter-btns')
+    document.body.append(highlighterButtons);
 }
 
 function createHighlighter() {
@@ -298,7 +293,7 @@ function createPreviewContainer(){
 
     // prepends previewContainer to HTML
     document.body.append(container);
-    previewContainer = container;
+    return container;
 }
 
 function createButtonModule() {
