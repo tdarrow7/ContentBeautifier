@@ -22,6 +22,7 @@ function getPositionOfElement(el) {
         left = elemRect.left - bodyRect.left;
 
     coordinates = { height, width, left, top };
+    console.log('coordinate array within getPosition: ' + coordinates);
 }
 
 function moveHighlightAndButtons() {
@@ -42,17 +43,16 @@ function updateButtonPosition() {
 }
 
 function checkIfScrollingIsNeeded() {
-    const top = coordinates[3],
-        bodyRect = document.body.getBoundingClientRect(),
+    let bodyRect = document.body.getBoundingClientRect(),
         bodyTop = bodyRect.top * -1;
 
-    if (top - bodyTop < 200)
+    if (coordinates.top - bodyTop < 200)
         window.scroll({
             top: bodyTop - 350,
             left: 0,
             behavior: "smooth"
         });
-    else if (top - bodyTop > 600)
+    else if (coordinates.top - bodyTop > 600)
         window.scroll({
             top: bodyTop + 350,
             left: 0,
@@ -62,8 +62,6 @@ function checkIfScrollingIsNeeded() {
 
 // Declare function that builds a new node tree based on what you clicked on.
 function buildnodeTree(event) {
-
-    console.log('within buildNodeTree function');
     // if a tree already exists due to a previous click, call the refreshDomAndPreview function
     if (tree.length > 0) {
         resetVirtualDomTree();
@@ -91,7 +89,6 @@ function buildnodeTree(event) {
 
     // create visual representation of tree
     fillVirtualDomWithNodes();
-    console.log('end of buildNodeTree function');
 }
 
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
@@ -106,7 +103,7 @@ function resetVirtualDomTree() {
 }
 
 function clearVirtualDom() {
-    const navDiv = document.querySelector('.data-nav .nav-div');
+    let navDiv = document.querySelector('.data-nav .nav-div');
     navDiv.innerHTML = '';
 }
 
@@ -301,7 +298,7 @@ function createPreviewContainer(){
 }
 
 function createButtonModule() {
-    const buttonDiv = document.createElement('div');
+    let buttonDiv = document.createElement('div');
     setMultipleAttributes(buttonDiv, {
         class: 'btn-container',
         'data-cbspecial': ''
