@@ -65,8 +65,10 @@ function buildnodeTree(event) {
 
     console.log('within buildNodeTree function');
     // if a tree already exists due to a previous click, call the refreshDomAndPreview function
-    if (tree.length > 0) refreshDomAndPreview();
-
+    if (tree.length > 0) {
+        resetVirtualDomTree();
+        clearVirtualDom();
+    }
     window.getComputedStyle(html);
     // set variables to elements that you clicked on
     el = event.target;
@@ -93,10 +95,7 @@ function buildnodeTree(event) {
 }
 
 // clear all data-cbnode and data-cbcopy attributes out of existing tree
-function refreshDomAndPreview() {
-    console.log('within refreshDomAndPreview()')
-    const navDiv = document.querySelector('.data-nav .nav-div');
-    navDiv.innerHTML = '';
+function resetVirtualDomTree() {
     for (let i = 0; i < tree.length; i++) {
         removeMultipleAttributes(tree[i],['data-cbnode', 'style'])
         if (tree[i].hasAttribute("data-cbcopy"))
@@ -104,6 +103,11 @@ function refreshDomAndPreview() {
     }
     // destroy the current tree
     tree = [];
+}
+
+function clearVirtualDom() {
+    const navDiv = document.querySelector('.data-nav .nav-div');
+    navDiv.innerHTML = '';
 }
 
 // function that builds navigable representation of tree
@@ -363,7 +367,8 @@ function destroyPreviewContainer() {
 }
 
 function destroyVirtualDom() {
-    refreshDomAndPreview();
+    // refreshDomAndPreview();
+    resetVirtualDomTree()
     navBar.remove();
 }
 

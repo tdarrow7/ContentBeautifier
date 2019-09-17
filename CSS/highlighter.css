@@ -106,6 +106,7 @@
     z-index: -1000;
     background-color: #FFFFFF;
     position: fixed;
+    border-radius: 9px;
     left: 18vw;
     top: 200px;
     width: 1020px;
