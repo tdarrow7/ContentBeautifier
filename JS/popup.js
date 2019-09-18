@@ -1,6 +1,16 @@
 let powerBtn = document.querySelector('.power-btn');
-    
-window.addEventListener('load', getStatus);
+
+window.addEventListener('load', loader);
+
+function loader() {
+    chrome.storage.sync.get(['key'], function (result) {
+        var status = result.key;
+        if (status)
+            powerOn();
+        else
+            powerOff();
+    });
+}
 
 // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 //     chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
@@ -17,15 +27,11 @@ function isNotActive() {
 }
 
 function getStatus() {
-    var status;
-
     chrome.storage.sync.get(['key'], function (result) {
         status = result.key;
         console.log('Status: ' + status);
         return status;
     });
-
-    // return status;
 }
 
 
@@ -42,8 +48,8 @@ powerBtn.addEventListener('click', function () {
 
 function powerOff() {
     isNotActive();
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {command: "off"}, function(response) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { command: "off" }, function (response) {
             console.log(response.message);
         });
     });
@@ -52,8 +58,8 @@ function powerOff() {
 
 function powerOn() {
     isActive();
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {command: "on"}, function(response) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { command: "on" }, function (response) {
             console.log(response.message);
         });
     });
