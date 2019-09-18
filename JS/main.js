@@ -428,21 +428,15 @@ document.onkeyup = function (e) {
         altIsPressed = false;
 }
 
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-      console.log(sender.tab ?
-                  "from a content script:" + sender.tab.url :
-                  "from the extension");
-      if (request.command == "off") {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.command == "off") {
         console.log('destroying content beautifier');
-          sendResponse({message: "destroyed"});
-          canCreateCB = false;
-      }
-
-      if (request.command == "on") {
+        destroyBeautifierElements();
+        canCreateCB = false;
+    }
+    if (request.command == "on") {
         console.log('can create content beautifier');
-          sendResponse({message: "ready to create"});
-          canCreateCB = true;
-      }
-
-    });
+        sendResponse({message: "ready to create"});
+        canCreateCB = true;
+    }
+});
