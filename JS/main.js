@@ -372,8 +372,7 @@ function destroyVirtualDom() {
 // listen for click events in the window. On click, call buildnodeTree function
 window.addEventListener("click", () => {
 
-    if (!event.target.parentNode.hasAttribute("data-cbspecial") && altIsPressed && canCreateCB) {
-        // check if content beautifier is already running
+    if (!event.target.hasAttribute("data-cbspecial") && altIsPressed  && canCreateCB) {
         if (!cbExists)
             createBeautifierElements();
         buildnodeTree(event);
@@ -430,13 +429,18 @@ document.onkeyup = function (e) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.command == "off") {
-        console.log('destroying content beautifier');
-        destroyBeautifierElements();
+        if (canCreateCB && cbExists) {
+            destroyBeautifierElements();
+        }
         canCreateCB = false;
     }
     if (request.command == "on") {
-        console.log('can create content beautifier');
         sendResponse({message: "ready to create"});
         canCreateCB = true;
     }
+});
+
+chrome.storage.sync.get(['key'], function (result) {
+    if (result.key == true)
+        canCreateCB = true;
 });
