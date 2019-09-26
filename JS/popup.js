@@ -1,86 +1,53 @@
 let powerBtn = document.querySelector('.power-btn');
 
-window.addEventListener('load', loader);
+window.addEventListener('load', loadPowerState);
 
-function loader() {
-    chrome.storage.sync.get(['key'], function (result) {
-        var status = result.key;
-        if (status)
-            powerOn();
-        else
-            powerOff();
+// get power state on load from storage
+function loadPowerState() {
+    chrome.storage.sync.get(['cbKey'], function (result) {
+        let status = result.cbKey;
+        (status == true) ? powerOn() : powerOff();
     });
 }
 
-// chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-//     chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
-//       console.log(response.farewell);
-//     });
-//   });
-
+// function to set cbKey boolean in storage to true
 function isActive() {
-    chrome.storage.sync.set({ key: true });
+    chrome.storage.sync.set({ cbKey: true });
 }
 
+// function to set cbKey boolean in storage to true
 function isNotActive() {
-    chrome.storage.sync.set({ key: false });
+    chrome.storage.sync.set({ cbKey: false });
 }
 
-function getStatus() {
-    chrome.storage.sync.get(['key'], function (result) {
-        status = result.key;
-        console.log('Status: ' + status);
-        return status;
-    });
-}
-
-
-
+// toggle powerstates for button and trigger sendStatusToPage() function
 powerBtn.addEventListener('click', function () {
-    if (this.classList.contains('active')) {
-        powerOff();
-        getStatus();
-    } else {
-        powerOn();
-        getStatus();
-    }
+    (this.classList.contains('active')) ? powerOff() : powerOn();
+    sendStatusToPage();
 })
 
+
+// function to change button power state to 'on'
 function powerOff() {
     isNotActive();
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { command: "off" }, function (response) {
-            console.log(response.message);
-        });
-    });
     powerBtn.classList.remove('active');
 }
 
+// function to change button power state to 'on'
 function powerOn() {
     isActive();
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { command: "on" }, function (response) {
-            console.log(response.message);
-        });
-    });
     powerBtn.classList.add('active');
 }
 
-// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//     console.log(sender.tab ?
-//     "from a content script:" + sender.tab.url :
-//     "from the extension");
-//     if (request.question == "isOn")
-//     sendResponse({farewell: "you can turn on"});
-//     return true;
-// });
-
-
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-      console.log(sender.tab ?
-                  "from a content script:" + sender.tab.url :
-                  "from the extension");
-      if (request.greeting == "hello")
-        sendResponse({farewell: "goodbye"});
+// function to send status to current tab
+function sendStatusToPage() {
+    chrome.storage.sync.get(['cbKey'], function (result) {
+        let powerStatus = (result.cbKey == true) ? 'on' : 'off';
+        console.log('status: ' + powerStatus);
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { command: powerStatus }, function () {
+                console.log('success');
+            });
+        });
     });
+}

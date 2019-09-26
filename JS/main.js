@@ -14,6 +14,7 @@ let el = null,
     navBar = null,
     coordinates = [];
 
+// function used to get position of element specified as variable passed in
 function getPositionOfElement(el) {
     let bodyRect = document.body.getBoundingClientRect(),
         elemRect = el.getBoundingClientRect(),
@@ -22,14 +23,17 @@ function getPositionOfElement(el) {
         top = elemRect.top - bodyRect.top,
         left = elemRect.left - bodyRect.left;
 
+    // set coordinate values
     coordinates = { height, width, left, top };
 }
 
+// function to trigger the repositioning of highlighter and buttons
 function moveHighlightAndButtons() {
     changeElementHighlightPosition(elementHighlighter);
     updateButtonPosition();
 }
 
+// function to specifically move button module to bottom of elementHighlighter
 function updateButtonPosition() {
     let { height, width, left, top } = coordinates;
     var styleString =
@@ -42,6 +46,7 @@ function updateButtonPosition() {
     highlighterButtons.setAttribute('style', styleString);
 }
 
+// check to see if we need to scroll in order to get elementHighlighter more into focus
 function checkIfScrollingIsNeeded() {
     let bodyRect = document.body.getBoundingClientRect(),
         bodyTop = bodyRect.top * -1;
@@ -188,12 +193,14 @@ function copyFunction(){
             alert('Copy Unsuccessful');
     }
 }
-// Start of PreviewBox Manipulation Functions
+
+// clear contents out of previewBox element
 function clearPreview(){
     let previewBox = document.querySelector('.previewBox');
     previewBox.innerHTML = "";
 }
 
+// function to fill previewBox with new content and reformat everything
 function fillPreview() {
     let temp = document.querySelector('[data-cbcopy="true"]').cloneNode(true);
     let previewBox = document.querySelector('.previewBox');
@@ -201,8 +208,8 @@ function fillPreview() {
     resetDownloadErrorArrays();
     reformatEverythingEverywhere(temp);
 }
-// End of PreviewBox Manipulation Functions
 
+// move copy elements up/down the created element tree[]
 function copySwitch(){
     let allCopy = document.querySelectorAll("a.copy");
     for (let i = 0; i < allCopy.length; i++) {
@@ -216,11 +223,7 @@ function copySwitch(){
     }, 3000);
 }
 
-function doesElementExist(query) {
-    let el = document.querySelector(query);
-    return (el != null) ? true : false;
-}
-
+// change highlighter element position to be drawn around coordinates
 function changeElementHighlightPosition(highlighter) {
   let { height, width, left, top } = coordinates;
   var styleString =
@@ -240,6 +243,7 @@ function changeElementHighlightPosition(highlighter) {
   })
 }
 
+// function to create all required beautifier elements
 function createBeautifierElements() {
     createHighlighters();
     previewContainer = createPreviewContainer();
@@ -247,6 +251,7 @@ function createBeautifierElements() {
     cbExists = true;
 }
 
+// create highlighter elements and append to body
 function createHighlighters() {
     elementHighlighter = createHighlighter();
     hoverHighlighter = createHighlighter();
@@ -256,6 +261,7 @@ function createHighlighters() {
     document.body.append(highlighterButtons);
 }
 
+// return created highlighter element
 function createHighlighter() {
     var highlighter = document.createElement('div');
     setMultipleAttributes(highlighter, {
@@ -266,6 +272,7 @@ function createHighlighter() {
     return highlighter;
 }
 
+// return created preview container
 function createPreviewContainer(){
     // verify that previewContainer doesn't exist before building a new one.
     if (document.querySelector('.previewContainer') != null) return;
@@ -297,6 +304,7 @@ function createPreviewContainer(){
     return container;
 }
 
+// return button module
 function createButtonModule() {
     let buttonDiv = document.createElement('div');
     setMultipleAttributes(buttonDiv, {
@@ -308,6 +316,7 @@ function createButtonModule() {
     return buttonDiv;
 }
 
+// return a copy button
 function createCopyButton() {
     let button = document.createElement("a");
     setMultipleAttributes(button, {
@@ -319,6 +328,7 @@ function createCopyButton() {
     return button;
 }
 
+// return a preview button
 function createPreviewButton() {
     let button = document.createElement("a");
     setMultipleAttributes(button, {
@@ -330,8 +340,7 @@ function createPreviewButton() {
     return button;
 }
 
-// creates and prepends a nav to the HTML DOM
-// return [nav, navDiv] nodes if used elsewhere
+// create virtualDom on the side
 function createVirtualDom(){
     let nav = document.createElement("nav"),
         navDiv = document.createElement("div");
@@ -345,6 +354,7 @@ function createVirtualDom(){
     return nav;
 }
 
+// destroy all content beautifier elements. Essentially reset everything
 function destroyBeautifierElements() {
     destroyHighlighters();
     destroyPreviewContainer();
@@ -353,18 +363,20 @@ function destroyBeautifierElements() {
     cbExists = false;
 }
 
+// remove highlighter elements from DOM
 function destroyHighlighters() {
     elementHighlighter.remove();
     hoverHighlighter.remove();
     highlighterButtons.remove();
 }
 
+// remove preview element from DOM
 function destroyPreviewContainer() {
     previewContainer.remove();
 }
 
+// reset and remove virtual DOM from DOM
 function destroyVirtualDom() {
-    // refreshDomAndPreview();
     resetVirtualDomTree()
     navBar.remove();
 }
@@ -397,50 +409,60 @@ window.addEventListener("blur", () => {
     ctrlIsPressed = false;
 });
 
+// listen for button keyDown interactions
 document.onkeydown = function (e) {
     e = e || window.event;
     let code = e.code.toString();
+    // Ctrl key is pressed
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = true;
+    // Alt key is pressed
     if (code == 'AltLeft' || code == 'AltRight')
         altIsPressed = true;
-    
     // Esc is pressed
-
     if (code == "Escape"){
         if (html.classList.contains("previewClicked"))
             html.classList.remove("previewClicked");
         else
             destroyBeautifierElements();
     }
+    // check if both Ctrl + C are pressed at the same time
     if (ctrlIsPressed && code == "KeyC")
-        // Ctrl + C
         copyFunction();
 }
 
+// listen for button keyUp interactions
 document.onkeyup = function (e) {
     e = e || window.event;
     let code = e.code.toString();
+    // Ctrl key is depressed
     if (code == 'ControlLeft' || code == 'ControlRight')
         ctrlIsPressed = false;
+    // Alt key is depressed
     if (code == 'AltLeft' || code == 'AltRight')
         altIsPressed = false;
 }
 
+// listen for messages from chrome extension
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.command == "off") {
+        console.log('command is "off"');
         if (canCreateCB && cbExists) {
             destroyBeautifierElements();
         }
         canCreateCB = false;
     }
     if (request.command == "on") {
+        console.log('command is "on"');
         sendResponse({message: "ready to create"});
         canCreateCB = true;
     }
+
+    sendResponse({farewell: "done"});
 });
 
-chrome.storage.sync.get(['key'], function (result) {
-    if (result.key == true)
+// on page load, get powerState from chrome storage
+chrome.storage.sync.get(['cbKey'], function (result) {
+    if (result.cbKey == true)
         canCreateCB = true;
 });
