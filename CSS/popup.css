@@ -77,6 +77,10 @@ img {
   color: #0072ff;
 }
 
+.flex .active .fa {
+  color: #62A945;
+}
+
 html[data-cbnode] {
   scroll-behavior: smooth;
   /* display: flex; */
